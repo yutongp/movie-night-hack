@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	This is a test page for our APP
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script src="jquery-1.9.1.js"></script>
+<script src="fb.js"></script>
+<script language="javascript" type="text/javascript">
+    init();
+</script>
+<div id="login">
+	<fb:login-button autologoutlink="true" perms="user_likes, friends_likes, create_event, publish_stream"
+	onlogin="showFriendsList()">
+	</fb:login-button>
+</div>
+<input type="button" name="my_full_name" onclick="getMovieInfo('world war Z')" value="create event"></button>
+<input type="button" name="showFriends" onclick="ShowMyName('Movie Night', 'My Movie', 'My home', '2013-07-13')" title="aaa" value="Invite Friends"></button>
+<br>
+<div id="friends"></div>
+<div id="movies"></div>
+<div id="test"></div>
+<script language="javascript" type="text/javascript">
+
+
+
+</script>
+</body>
+</html>
