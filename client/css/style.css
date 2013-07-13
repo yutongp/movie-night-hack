@@ -101,3 +101,6 @@ body {
 	-o-transform: translateX(12rem);
 	transform: translateX(12rem);
 }
+
+img { width: 25px; height: 25px; padding-right: 10px;}
+.ui-autocomplete > li { height: 40px; }

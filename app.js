@@ -6,14 +6,28 @@ var http = require('http'),
 // Define a single-page client called 'main'
 ss.client.define('main', {
 	view: 'app.html',
-	css:  ['style.css','bootstrap.min.css'],
-	code: ['libs/jquery.min.js', 'app'],
+	css:  ['style.css','bootstrap.min.css','jquery-ui-1.10.3.custom.css'],
+	code: ['libs/jquery.min.js','libs/jquery-ui-1.10.3.custom.js','app'],
 	tmpl: '*'
 });
 
 // Serve this client on the root URL
 ss.http.route('/', function(req, res){
 	res.serveClient('main');
+});
+
+
+// Define a single-page client called 'main'
+ss.client.define('home', {
+  view: 'home.html',
+  css:  ['style.css','bootstrap.min.css', 'jquery-ui-1.10.3.custom.css'],
+  code: ['libs/jquery.min.js','libs/jquery-ui-1.10.3.custom.js', 'app'],
+  tmpl: '*'
+});
+
+// Serve this client on the root URL
+ss.http.route('/home', function(req, res){
+  res.serveClient('home');
 });
 
 // Use server-side compiled Hogan (Mustache) templates. Others engines available
