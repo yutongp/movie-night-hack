@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<SocketStream/>
+		<title>Template · Bootstrap</title>
+		<style type="text/css">
+			#css-filter-blur:hover { filter: url(#blur-effect-1); }
+			.movie-image2{ filter: url(#blur-effect-1); }
+		</style>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+		<!-- Fav and touch icons -->
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.io/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.io/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.io/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" href="http://twitter.github.io/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+		<link rel="shortcut icon" href="http://twitter.github.io/bootstrap/assets/ico/favicon.png">
+		<script>
+			var OffScreenNav = {
+				nav: $("#offscreen-nav"),
+				closeButton: $("#effeckt-off-screen-nav-close"),
+				init: function() {
+					this.bindUIActions();
+				},
+
+				bindUIActions: function() {
+					$(".meny-arrow").on("click", function() {
+						OffScreenNav.toggleNav("offscreen-nav-left-push");
+					});
+				},
+
+				toggleNav: function(type) {
+					// Show
+					if (!$("#offscreen-nav").hasClass("offscreen-nav-show")) {
+
+						 $("#offscreen-nav").addClass(type);
+
+						setTimeout(function() {
+							$("#offscreen-nav").addClass("offscreen-nav-show");
+							$(".meny-arrow").html("&#xF0D9;");
+
+						}, 300);
+
+						// Hide
+						} else {
+
+						$("#offscreen-nav").removeClass("offscreen-nav-show");
+
+						setTimeout(function() {
+							$("#offscreen-nav").removeClass(type);
+							$(".meny-arrow").html("&#xF0DA;");
+							// WEIRD BUG
+							// Have to trigger redraw or it sometimes leaves
+							// behind a black box (Chrome 27.0.1433.116)
+							$("#offscreen-nav").hide();
+							var blah = $("#offscreen-nav").width();
+							$("#offscreen-nav").show();
+						}, 300);
+					}
+				}
+			};
+
+			$(document).ready(function(){
+				OffScreenNav.init();
+
+				$('.panel').toggle(function(){
+					$(this).addClass('flip');
+					},function(){
+					$(this).removeClass('flip');
+				});
+
+				$('.panel').hover(function(){
+					$(this).addClass('panel-hover');
+					},function(){
+					$(this).removeClass('panel-hover');
+				});
+			});
+		</script>
+	</head>
+	<svg style="height: 0px;top: -100px;position: absolute">
+		<filter id="blur-effect-1">
+			<feGaussianBlur stdDeviation='8' in="SourceGraphic"/>
+		</filter>
+	</svg>
+	<body>
+		<nav class="offscreen-nav" id="offscreen-nav">
+		<h4> Navigation </h4>
+		</nav>
+		<button  href="#button" class="meny-arrow">&#xF0DA;
+		</button>
+		<div class="container-narrow">
+			<div class="recommand-movie-table">
+				<div class="" id="title-bar">
+					<div class-"row">
+						<h1>Movie Night</h1>
+					</div>
+				</div>
+				<div class="movie-container" >
+					<div class="panel">
+						<section class="front">
+							<section class="movie-image1">
+							 <img src="http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg" >
+							</section>
+							<section class="movie-image2">
+							 <img src="http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg" >
+							</section>
+							<section class="panel-info-wrap">
+								<section class="panel-info">
+									<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+									In a single collection, Font Awesome is a pictographic language of web-related actions.
+								</section>
+							</section>
+						</section>
+
+						<div class="back">
+							<section class="movie-image1">
+							 <img src="http://content9.flixster.com/movie/11/16/78/11167835_800.jpg" >
+							</section>
+							</section>
+							<section class="movie-image2">
+							 <img src="http://content9.flixster.com/movie/11/16/78/11167835_800.jpg" >
+							</section>
+							</section>
+							<section class="panel-info-wrap">
+								<section class="panel-info">
+									<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+									In a single collection, Font Awesome is a pictographic language of web-related actions.
+								</section>
+							</section>
+						</div>
+					</div>
+					<div class="panel">
+						<div class="front">
+							<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+							In a single collection, Font Awesome is a pictographic language of web-related actions.
+						</div>
+						<div class="back">
+							<h4><i class="icon-thumbs-up-alt"></i> Made for Bootstrap</h4>
+							Designed from scratch to be fully compatible with <a href="http://getbootstrap.com">Bootstrap 2.3.2</a>.
+						</div>
+					</div>
+					<div class="panel">
+						<div class="front">
+							<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+							In a single collection, Font Awesome is a pictographic language of web-related actions.
+						</div>
+						<div class="back">
+							<h4><i class="icon-thumbs-up-alt"></i> Made for Bootstrap</h4>
+							Designed from scratch to be fully compatible with <a href="http://getbootstrap.com">Bootstrap 2.3.2</a>.
+						</div>
+					</div>
+					<div class="panel">
+						<div class="front">
+							<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+							In a single collection, Font Awesome is a pictographic language of web-related actions.
+						</div>
+						<div class="back">
+							<h4><i class="icon-thumbs-up-alt"></i> Made for Bootstrap</h4>
+							Designed from scratch to be fully compatible with <a href="http://getbootstrap.com">Bootstrap 2.3.2</a>.
+						</div>
+					</div>
+					<div class="panel">
+						<div class="front">
+							<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+							In a single collection, Font Awesome is a pictographic language of web-related actions.
+						</div>
+						<div class="back">
+							<h4><i class="icon-thumbs-up-alt"></i> Made for Bootstrap</h4>
+							Designed from scratch to be fully compatible with <a href="http://getbootstrap.com">Bootstrap 2.3.2</a>.
+						</div>
+					</div>
+					<div class="panel">
+						<div class="front">
+							<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+							In a single collection, Font Awesome is a pictographic language of web-related actions.
+						</div>
+						<div class="back">
+							<h4><i class="icon-thumbs-up-alt"></i> Made for Bootstrap</h4>
+							Designed from scratch to be fully compatible with <a href="http://getbootstrap.com">Bootstrap 2.3.2</a>.
+						</div>
+					</div>
+					<div class="panel">
+						<div class="front">
+							<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+							In a single collection, Font Awesome is a pictographic language of web-related actions.
+						</div>
+						<div class="back">
+							<h4><i class="icon-thumbs-up-alt"></i> Made for Bootstrap</h4>
+							Designed from scratch to be fully compatible with <a href="http://getbootstrap.com">Bootstrap 2.3.2</a>.
+						</div>
+					</div>
+					<div class="panel">
+						<div class="front">
+							<h4><i class="icon-flag"></i> One Font, 361 Icons</h4>
+							In a single collection, Font Awesome is a pictographic language of web-related actions.
+						</div>
+						<div class="back">
+							<h4><i class="icon-thumbs-up-alt"></i> Made for Bootstrap</h4>
+							Designed from scratch to be fully compatible with <a href="http://getbootstrap.com">Bootstrap 2.3.2</a>.
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="selected-movie-list">
+			</div>
+		</div>
+
+	</body>
+</html>

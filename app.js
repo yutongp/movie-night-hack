@@ -16,6 +16,19 @@ ss.http.route('/', function(req, res){
 	res.serveClient('main');
 });
 
+// Define a single-page client called 'main'
+ss.client.define('test', {
+	view: 'test.html',
+	css:  ['styletest.css','bootstrap.min.css'],
+	code: ['libs/jquery.min.js', 'app'],
+	tmpl: '*'
+});
+
+// Serve this client on the root URL
+ss.http.route('/test', function(req, res){
+	res.serveClient('test');
+});
+
 // Use server-side compiled Hogan (Mustache) templates. Others engines available
 ss.client.templateEngine.use(require('ss-hogan'));
 
