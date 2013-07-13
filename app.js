@@ -16,9 +16,6 @@ ss.http.route('/', function(req, res){
   res.serveClient('main');
 });
 
-// Code Formatters
-ss.client.formatters.add(require('ss-stylus'));
-
 // Use server-side compiled Hogan (Mustache) templates. Others engines available
 ss.client.templateEngine.use(require('ss-hogan'));
 
