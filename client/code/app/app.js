@@ -1,6 +1,10 @@
 // Client Code
 
 console.log('App Loaded');
+
+    $( "#sortable" ).sortable();
+
+
    $("#select").autocomplete({
         source: function (request, response) {
             $.ajax({
@@ -21,7 +25,16 @@ console.log('App Loaded');
                     }));
                 }
             });
+        },
+        select: function(e, obj) {
+            console.log(obj.item.value);
+            $("#sortable").append('<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><img src=' + obj.item.avatar + '/>' + obj.item.value + '<a class="close" id="cross">x</a></li>').slideDown("slow");
+            $(".close").on('click', function()
+            {
+                $(this).parent().fadeOut("fast");;
+            });
         }
+
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
         return $("<li />")
             .data("item.autocomplete", item)
