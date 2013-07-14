@@ -339,36 +339,39 @@ function voteOnComrecoMovies(selecter) {
 	}
 }
 
-function addVoteOnMovie(id){
+function addVoteOnMovie(movie){
 	//TODO add vote change order ...
-    var value = thisEvent.selectedMovies[id].vote; 
-    console.log(value);
-    if (value>0)
-    {
-        $("span1."+id).text(value);
-    }
-    else
-    {
-        $("span1."+id).text(0);
-    }
+	var value = movie.vote;
+	var id = movie.movieID;
+	thisEvent.selectedMovies[id].vote = movie.vote;
+	console.log(value);
+	if (value>0)
+	{
+		$("span1."+id).text(value);
+	}
+	else
+	{
+		$("span1."+id).text(0);
+	}
 }
+
 
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
-            $('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().prependTo(".voting").show("slide", {direction:"left"},"fast");
-            $('.upvote').on('click', function()
-            {
-                console.log($(this).parent().find('span1').text());
-                var id = parseInt($(this).parent().find('span1').attr('class'));
-                ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],true);
+		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().prependTo(".voting").show("slide", {direction:"left"},"fast");
+	$('.upvote').on('click', function()
+			{
+				console.log($(this).parent().find('span1').text());
+				var id = parseInt($(this).parent().find('span1').attr('class'));
+				ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],true);
 
-            });
-            $('.downvote').on('click', function()
-            {
-                  var id = parseInt($(this).parent().find('span1').attr('class'));
-                  ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],false);
-            });
-            addVoteOnMovie(movie.movieID);
+			});
+	$('.downvote').on('click', function()
+			{
+				var id = parseInt($(this).parent().find('span1').attr('class'));
+				ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],false);
+			});
+	addVoteOnMovie(movie);
 	console.log("add", movie.title, "to selected Movie list");
 }
 
@@ -442,7 +445,7 @@ $(document).ready(function(){
 			//TODO not on list, add to list;
 			addtoSelectedMlist(movie);
 		} else {
-			addVoteOnMovie(movie.movieID);
+			addVoteOnMovie(movie);
 			//TODO on list, add on vote number;
 		}
 	});

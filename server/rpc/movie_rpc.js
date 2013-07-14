@@ -131,10 +131,11 @@ exports.actions = function(req, res, ss) {
 			thisEvent.addSelectedMovies(movie);
 			if (isUp) {
 				thisEvent.selectedMovies[movie.movieID].vote++;
-			} else {
+			}
+			else {
 				thisEvent.selectedMovies[movie.movieID].vote--;
 			}
-			ss.publish.channel(eventID, 'partiVote', movie);
+			ss.publish.channel(eventID, 'partiVote', thisEvent.selectedMovies[movie.movieID]);
 		},
 
 	};
