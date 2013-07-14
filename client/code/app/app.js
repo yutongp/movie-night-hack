@@ -72,7 +72,7 @@ function showFriend(response) {
     var data = response.data;
     count = data.length;
     for (var i = 0; i < data.length; i++) {
-        var obj  = {'id':data[i].id, 'name':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
+        var obj  = {'id':data[i].id, 'label':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
         friends.push(obj);
         console.log(obj);
     }
@@ -102,9 +102,10 @@ function showFriend(response) {
 	$( "#sortable" ).sortable();
 
 	$("#select").autocomplete({
+            minLength: 0,
             source: friends,
 			select: function(e, obj) {
-				$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.name + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+				$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
 				$(".close").on('click', function()
 						{
 							$(this).parent().hide("slide",{direction:"left"},"slow");
@@ -113,7 +114,7 @@ function showFriend(response) {
 
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
 		return $("<li/>")
-			.append('<a><img class="friend-avatar" src='+item.pic+'/>' + item.name + '</a>')
+			.append('<a><img class="friend-avatar" src='+item.pic+'/>' + item.label + '</a>')
 			.appendTo(ul);
 	};
 
