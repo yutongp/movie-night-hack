@@ -123,13 +123,17 @@ exports.actions = function(req, res, ss) {
 			}
 		},
 
-		thisPartiVote: function(eventID, movie) {
+		thisPartiVote: function(eventID, movie, isUp) {
 			var thisEvent = allEvent[eventID];
 			if (thisEvent === undefined) {
 				console.log("!!!!!!! undefined Event", eventID);
 			}
 			thisEvent.addSelectedMovies(movie);
-			thisEvent.selectedMovies[movie.movieID].vote++;
+			if (isUp) {
+				thisEvent.selectedMovies[movie.movieID].vote++;
+			} else {
+				thisEvent.selectedMovies[movie.movieID].vote--;
+			}
 			ss.publish.channel(eventID, 'partiVote', movie);
 		},
 

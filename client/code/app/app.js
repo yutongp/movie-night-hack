@@ -335,7 +335,7 @@ function voteOnComrecoMovies(selecter) {
 	}
 
 	if (votedmovie != undefined) {
-		ss.rpc("movie_rpc.thisPartiVote", thisEventID, votedmovie);
+		ss.rpc("movie_rpc.thisPartiVote", thisEventID, votedmovie, true);
 	}
 }
 
