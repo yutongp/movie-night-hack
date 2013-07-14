@@ -105,7 +105,9 @@ exports.actions = function(req, res, ss) {
 				return res(false);
 			}
 
-			console.log("server set event", eventID)
+			console.log("server set event", eventID);
+			console.log("server set parti", parti.name);
+			console.log("server set parti", parti.fbID);
 			thisEvent.addParticipate(parti);
 			//TODO update list
 			req.session.channel.subscribe(eventID);
