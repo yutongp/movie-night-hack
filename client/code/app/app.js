@@ -217,15 +217,14 @@ function voteOnComrecoMovies(selecter) {
 
 function addVoteOnMovie(movie){
 	//TODO add vote change order ...
+
 }
 
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
-	console.log("add", movie.title, "to selected Movie list");
 }
 
 $(document).ready(function(){
-
 	appendPanel();
 //For #rvote
 	$(".panel-vote").bind("click", function() {
