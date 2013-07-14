@@ -15,6 +15,9 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	this.addParticipate = function (parti) {
 		if (this.participates[parti.fbID] == undefined) {
 			this.participates[parti.fbID] = new Participate();
+			if (parti.isHost) {
+				this.host = parti;
+			}
 			return true;
 		} else {
 			return false;
@@ -41,7 +44,6 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 }
 
 
-allEvent = {};
 
 function Participate () {
 	this.name = "";
@@ -66,29 +68,51 @@ function Movie () {
 	this.movieID = "";
 	this.title = "";
 	this.imgurl = "";
+	this.trailerurl = "";
 	this.rate = 0;
 	this.pgRate = "";
 	this.description = "";
+	this.genre = "";
 	this.vote = 0;
 }
+
+//////////////////////////
+//
+
+var allEvent = {};
+var eventCounter = 0;
+
+
 exports.actions = function(req, res, ss) {
 
 	// Example of pre-loading sessions into req.session using internal middleware
 	req.use('session');
-	var query = require('url').parse(req.url,true).query;
-	console.log(query);
-
 
 	return {
-		joinEvent: function (eventID) {
-			var thisEvent = eventMap[eventID];
-			//thisEvent.add(player.name, player.color);
-			//req.session.channel.subscribe(eventID);
-			//req.session.setUserId(player.name);
-			//ss.publish.channel(roomNumber, 'newPlayerIn', player);
+		joinEvent: function (eventID, parti, loca, time) {
+			console.log(eventID);
+			if (eventID === -1) {
+				// new event
+				eventID = eventCounter;
+				var thisEvent = new MovieEvent(eventID, parti, loca, time);
+				allEvent[eventID] = thisEvent;
+				eventCounter++;
+			}
+
+			if (allEvent[eventID] === undefined) {
+				return false;
+			}
+
+			thisEvent.addParticipate(parti);
+			//TODO update list
+			req.session.channel.subscribe(eventID);
+			req.session.setUserId(parti.fbID);
+			ss.publish.channel(eventID, 'newPartiOnine', parti);
+			return res(allEvent[eventID]);
 		},
 
-		
+		partiOffline: function(eventID, parti) {
+		},
 
 	};
 };
