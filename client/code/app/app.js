@@ -5,7 +5,7 @@ var EMPTY_STARCODE = "&#xF006;";
 
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
-	this.comrecoMoives = {};
+	this.comrecoMovies = {};
 	this.loca = lo;
 	this.time = ti;
 	this.eventID = eventid;
@@ -22,8 +22,8 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	}
 
 	this.addComrecoMovies = function (movie) {
-		if (this.comrecoMoives[movie.movieID] == undefined) {
-			this.comrecoMoives[movie.movieID] = movie;
+		if (this.comrecoMovies[movie.movieID] == undefined) {
+			this.comrecoMovies[movie.movieID] = movie;
 			return true;
 		} else {
 			return false;
@@ -44,14 +44,14 @@ function Participate () {
 	this.name = "";
 	this.fbID = "";
 	this.photourl = "";
-	this.recommandMoives = {};
+	this.recommandMovies = {};
 	this.friendList = {};
 	this.isHost = false;
-	this.online = false;
+	this.isOnline = false;
 
 	this.addRecommandMovies = function (movie) {
-		if (this.recommandMoives[movie.movieID] == undefined) {
-			this.recommandMoives[movie.movieID] = movie;
+		if (this.recommandMovies[movie.movieID] == undefined) {
+			this.recommandMovies[movie.movieID] = movie;
 			return true;
 		} else {
 			return false;
@@ -63,14 +63,58 @@ function Movie () {
 	this.movieID = "";
 	this.title = "";
 	this.imgurl = "";
+	this.trailerurl = "";
 	this.rate = 0;
 	this.pgRate = "";
 	this.description = "";
+	this.genre = "";
 	this.vote = 0;
 }
 
 ///////////////////
-// Client Code
+// Client Global Var
+//
+//
+
+
+var thisEvent = new MovieEvent(1, 2, 3, 4);
+var thisPrati = new Participate();
+var thisEventID = -1;
+
+
+////////////////////
+////
+// Client Side Code
+//
+
+GETURLV = (function () {
+	var get = {
+		push:function (key,value){
+			var cur = this[key];
+			if (cur.isArray){
+				this[key].push(value);
+			}else {
+				this[key] = [];
+				this[key].push(cur);
+				this[key].push(value);
+			}
+		}
+	},
+	search = document.location.search,
+	decode = function (s,boo) {
+		var a = decodeURIComponent(s.split("+").join(" "));
+		return boo? a.replace(/\s+/g,''):a;
+	};
+search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function (a,b,c) {
+	if (get[decode(b,true)]){
+		get.push(decode(b,true),decode(c));
+	}else {
+		get[decode(b,true)] = decode(c);
+	}
+});
+return get;
+})();
+
 var OffScreenNav = {
 	nav: $("#offscreen-nav"),
 	closeButton: $("#effeckt-off-screen-nav-close"),
@@ -135,10 +179,41 @@ function addMovieContainer(movie, index, side) {
 	$(".panel.panel-"+ index).find(side).find(".movie-image1").html('<img src=' + movie.imgurl + ' >');
 	$(".panel.panel-"+ index).find(side).find(".movie-image2").html('<img src=' + movie.imgurl + ' >');
 	addRate($(".panel.panel-"+ index).find(side).find(".rating"), movie.rate);
-	$(".panel.panel-"+ index).attr("movie-id", movie.movieID);
+	$(".panel.panel-"+ index).find(".panel-vote").attr("movie-id", movie.movieID);
+	$(".panel.panel-"+ index).find(".panel-vote").attr("panel-index", index);
+	$(".panel.panel-"+ index).find(".panel-title").html('<h4>' + movie.title +'</h4>');
+	$(".panel.panel-"+ index).find(".panel-pg-rate").html(movie.pgRate + " - " + movie.genre);
+	$(".panel.panel-"+ index).find(".panel-description").html('<p>' + movie.description + '</p>');
 }
 
 
+function voteOnComrecoMovies(selecter) {
+	var mID = $(selecter).attr("movie-id");
+	var index = $(selecter).attr("panel-index");
+
+	console.log("this parti vote on", mID);
+	console.log("this parti vote on", index);
+	if (thisEvent.comrecoMovies[mID] != undefined) {
+		var votedmovie = thisEvent.comrecoMovies[mID];
+		//TODO add vote in callback NOT HERE
+		//votedmovie.vote++;
+	} else {
+		alert("no voting movie!!");
+	}
+
+	if (votedmovie != undefined) {
+		ss.rpc("movie_rpc.thisPartiVote", thisEventID, votedmovie);
+	}
+}
+
+function addVoteOnMovie(movie){
+	//TODO add vote change order ...
+}
+
+function addtoSelectedMlist(movie) {
+	//TODO check dup title on the list
+	console.log("add", movie.title, "to selected Movie list");
+}
 
 $(document).ready(function(){
 	var aM = new Movie();
@@ -146,10 +221,21 @@ $(document).ready(function(){
 	aM.movieID = 10222;
 	aM.imgurl = 'http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg';
 	aM.rate = 8.4;
+	aM.genre = 'action';
+	aM.pgRate = "PG-13";
+	aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
 	for (var i = 0; i < 8; i++) {
 		addMovieContainer(aM, i, ".front");
 		addMovieContainer(aM, i, ".back");
 	}
+	thisEvent.addComrecoMovies(aM);
+
+
+//For #rvote
+	$(".panel-vote").bind("click", function() {
+		voteOnComrecoMovies(this);
+	});
+
 	OffScreenNav.init();
 	function init() {
 		FB.init({
@@ -182,11 +268,11 @@ $(document).ready(function(){
 		}
 	}
 
-	$('.panel').toggle(function(){
-		$(this).addClass('flip');
-	},function(){
-		$(this).removeClass('flip');
-	});
+	//$('.panel').toggle(function(){
+		//$(this).addClass('flip');
+	//},function(){
+		//$(this).removeClass('flip');
+	//});
 
 	$('.panel').hover(function(){
 		$(this).addClass('panel-hover');
@@ -202,28 +288,72 @@ $(document).ready(function(){
 
 	$( "#sortable" ).sortable();
 
-    var hash = {};
+	var hash = {};
 	$("#select").autocomplete({
-            source: friends,
-            close: function(e,obj) {
-                $("#select").val("");
-            },
-			select: function(e, obj) {
-                var label = obj.item.label;
-                if(!(label in hash))
-                {
-				    $('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-                    hash[obj.item.label]=1
-				    $(".close").on('click', function()
-						{
-							$(this).parent().hide("slide",{direction:"left"},"slow");
-						});
-                }
-			}
+		source: friends,
+		close: function(e,obj) {
+			$("#select").val("");
+		},
+		select: function(e, obj) {
+			var label = obj.item.label;
+			if(!(label in hash))
+	{
+		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+		hash[obj.item.label]=1
+		$(".close").on('click', function()
+			{
+				$(this).parent().hide("slide",{direction:"left"},"slow");
+			});
+	}
+		}
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
 		return $("<li/>")
 			.append('<a><img class="friend-avatar" src='+item.pic+'/>' + item.label + '</a>')
 			.appendTo(ul);
 	};
 
+	//// listen to the server /////
+	ss.event.on('newPartiOnline', function (parti) {
+		if (parti.fbID === thisPrati.fbID) {
+			return;
+		}
+		if (thisEvent.addParticipate(parti)) {
+			//TODO accpeted change status
+		} else {
+			thisEvent.participates[parti.fbID].isOnline = true;
+			//TODO light up online icon;
+		}
+	});
+
+	ss.event.on('partiVote', function (movie){
+		if (thisEvent.addSelectedMovies(movie)) {
+			//TODO not on list, add to list;
+			addtoSelectedMlist(movie);
+		} else {
+			addVoteOnMovie(movie);
+			//TODO on list, add on vote number;
+		}
+	});
+
+	//////
+	joinMovieEvent();
 });
+
+
+function joinMovieEvent() {
+	thisEventID = (GETURLV.eventID === undefined)
+				? -1
+				: GETURLV.eventID;
+
+	if (thisEventID === -1) {
+		thisPrati.isHost = true;
+	}
+
+	console.log("url eventID:", thisEventID);
+	var loca = "Arizona";
+	var time = "Now";
+	ss.rpc("movie_rpc.joinEvent", thisEventID, thisPrati, loca, time, function(serverEvent){
+		console.log("joined event:", serverEvent.eventID);
+		thisEventID = serverEvent.eventID;
+	});
+}
