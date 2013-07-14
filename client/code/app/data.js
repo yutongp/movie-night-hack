@@ -1,3 +1,8 @@
+var HALF_STARCODE = "&#xF123;";
+var FULL_STARCODE = "&#xF005;";
+var EMPTY_STARCODE = "&#xF006;";
+
+
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
 	this.comrecoMoives = {};

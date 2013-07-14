@@ -233,30 +233,16 @@ button {
 
 
 .rating {
-  unicode-bidi: bidi-override;
-  direction: rtl;
-  text-align: center;
-  font-family: "fontAwesome";
-  color: gold;
+	text-align: center;
+	font-family: "fontAwesome";
+	color: rgba(255,215,0,0.7);
+	padding: 3px;
 }
-/*.rating > span {*/
-  /*display: inline-block;*/
-  /*position: relative;*/
-  /*width: 1.1em;*/
-/*}*/
-/*.rating > span:hover,*/
-/*.rating > span:hover ~ span {*/
-  /*color: transparent;*/
-/*}*/
-/*.rating > .full-star:before {*/
-   /*content: "\2605";*/
-   /*position: absolute;*/
-   /*left: 0;*/
-   /*color: gold;*/
-/*}*/
-/*.rating > .half-star {*/
-   /*color: gold;*/
-/*}*/
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
 
 .panel-hover .panel-info {
 	top: 20%;
