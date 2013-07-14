@@ -232,6 +232,8 @@ function updateMovies(movieList) {
 
 		thisEvent.addComrecoMovies(movie);
 	}
+	
+	updateComrecoMovies();
 }
 
 function updateParticipate(participate, data) {
