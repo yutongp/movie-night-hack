@@ -223,6 +223,7 @@ button {
 
 .panel-info {
 	z-index: 903;
+	width: 100%;
 	height: 80%;
 	top: 95%;
 	position: absolute;
@@ -242,6 +243,30 @@ button {
   display: inline-block;
   position: relative;
   width: 1.1em;
+}
+
+.panel-title {
+	height: 50px;
+	overflow: hidden;
+}
+.panel-title > h4 {
+	margin: 0px;
+}
+
+.panel-description {
+	height: 95px;
+	overflow: hidden;
+}
+.panel-trailer, .panel-vote {
+	display: block;
+	background-color: rgba(0,0,0,0);
+	border: 1px solid rgba(200,200,200,0.2);
+	border-radius: 0.5em;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:5px;
+	width:150px;
+	height:30px;
 }
 
 .panel-hover .panel-info {

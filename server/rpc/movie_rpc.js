@@ -66,7 +66,7 @@ function Movie () {
 	this.movieID = "";
 	this.title = "";
 	this.imgurl = "";
-	this.score = 0;
+	this.rate = 0;
 	this.pgRate = "";
 	this.description = "";
 	this.vote = 0;

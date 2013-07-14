@@ -63,7 +63,7 @@ function Movie () {
 	this.movieID = "";
 	this.title = "";
 	this.imgurl = "";
-	this.score = 0;
+	this.rate = 0;
 	this.pgRate = "";
 	this.description = "";
 	this.vote = 0;
@@ -117,18 +117,39 @@ var OffScreenNav = {
 
 
 function addRate(ratingObj, rate) {
+	var ratingStar = "";
 	for (var i = 0; i < 10; i++) {
 		if (i < rate && i + 1 > rate) {
-			ratingObj.append("<span>" + HALF_STARCODE + "</span>");
+			ratingStar += "<span>" + HALF_STARCODE + "</span>";
 		} else if (i < rate) {
-			ratingObj.append("<span>" + FULL_STARCODE + "</span>");
+			ratingStar += "<span>" + FULL_STARCODE + "</span>";
 		} else {
-			ratingObj.append("<span>" + EMPTY_STARCODE + "</span>");
+			ratingStar += "<span>" + EMPTY_STARCODE + "</span>";
 		}
 	}
+	ratingObj.html(ratingStar);
 }
 
+
+function addMovieContainer(movie, index, side) {
+	$(".panel.panel-"+ index).find(side).find(".movie-image1").html('<img src=' + movie.imgurl + ' >');
+	$(".panel.panel-"+ index).find(side).find(".movie-image2").html('<img src=' + movie.imgurl + ' >');
+	addRate($(".panel.panel-"+ index).find(side).find(".rating"), movie.rate);
+	$(".panel.panel-"+ index).attr("movie-id", movie.movieID);
+}
+
+
+
 $(document).ready(function(){
+	var aM = new Movie();
+	aM.title = "Inception";
+	aM.movieID = 10222;
+	aM.imgurl = 'http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg';
+	aM.rate = 8.4;
+	for (var i = 0; i < 8; i++) {
+		addMovieContainer(aM, i, ".front");
+		addMovieContainer(aM, i, ".back");
+	}
 	OffScreenNav.init();
 	function init() {
 		FB.init({
