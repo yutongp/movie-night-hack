@@ -132,7 +132,7 @@ function getRelatedMovies(name)
 	$.get(urlId, function (response) {
 		if (response.movies.length > 0) {
 			var id = response.movies[0].id;
-			alert(response.movies[0].title);
+			//alert(response.movies[0].title);
 			var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies/'
 		+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
 
@@ -156,7 +156,7 @@ function getIMDBInfo(data) {
 	//alert('title: ' + data.title + ', id: ' + id);
 
 	$.get(url, function (response) {
-		alert("Find " + response.Title);
+		//alert("Find " + response.Title);
 
 		data.title = response.Title;
 		data.year = response.Year;
