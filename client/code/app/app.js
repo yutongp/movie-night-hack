@@ -82,6 +82,7 @@ var thisPrati = new Participate();
 var thisEventID = -1;
 
 var RECOMMANDNUM = 8;
+var friends=[];
 
 ////////////////////
 ////
@@ -434,12 +435,10 @@ $(document).ready(function(){
 			if (response.status == "connected") {
 				FB.api("/me", function (response) {
 					updateParticipate(thisPrati, response);
-					getMovies(response.id);
-					getMovies(100006228727252);
 					joinMovieEvent();
+					//getMovies(100006228727252);
 					//if ( == true) {
 					//TODO only showFriends for the host
-					showFriendsList();
 					//}
 				});
 			}
@@ -447,21 +446,6 @@ $(document).ready(function(){
 	}
 
 	facebookInit();
-
-	var friends=[];
-	function showFriendsList() {
-		FB.api('/me/friends', showFriend);
-	}
-
-
-	function showFriend(response) {
-		var data = response.data;
-		count = data.length;
-		for (var i = 0; i < data.length; i++) {
-			var obj  = {'id':data[i].id, 'label':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
-			friends.push(obj);
-		}
-	}
 });
 
 
@@ -483,7 +467,25 @@ function joinMovieEvent() {
 		console.log("joined event:", serverEvent.eventID);
 		thisEventID = serverEvent.eventID;
 		thisEvent = new MovieEvent(thisEventID, serverEvent.host, serverEvent.loca, serverEvent.time);
-		//TODO show movie
+		//sync event
+
+		getMovies(thisPrati.fbID);
+		//TODO add callback for showFriendsList
+		function showFriendsList() {
+			FB.api('/me/friends', showFriend);
+		}
+
+
+		function showFriend(response) {
+			var data = response.data;
+			count = data.length;
+			for (var i = 0; i < data.length; i++) {
+				var obj  = {'id':data[i].id, 'label':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
+				friends.push(obj);
+			}
+		}
+		showFriendsList();
+		//TODO show movie exist
 		var aM = new Movie();
 		aM.title = "Inception";
 		aM.movieID = 10222;
