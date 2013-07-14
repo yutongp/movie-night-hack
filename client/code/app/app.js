@@ -208,10 +208,15 @@ function voteOnComrecoMovies(selecter) {
 
 function addVoteOnMovie(movie){
 	//TODO add vote change order ...
+   
+
 }
 
+var selected_list = {};
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
+        
+           $('<li class="ui-state-default"><i class="icon-arrow-up"></i><i class="icon-arrow-down"></i><img class="friend-avatar" src=' + movie.imgurl + '>   ' + movie.title + '</li>').hide().prependTo(".voting").show("slide", {direction:"left"},"fast"); 
 	console.log("add", movie.title, "to selected Movie list");
 }
 
@@ -224,6 +229,9 @@ $(document).ready(function(){
 	aM.genre = 'action';
 	aM.pgRate = "PG-13";
 	aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
+
+    var movies = [];
+
 	for (var i = 0; i < 8; i++) {
 		addMovieContainer(aM, i, ".front");
 		addMovieContainer(aM, i, ".back");
