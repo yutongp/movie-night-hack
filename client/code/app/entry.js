@@ -17,7 +17,6 @@ ss.server.on('ready', function(){
 	jQuery(function(){
 
 		// Load app
-		require('/data');
 		require('/app');
 
 	});

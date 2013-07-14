@@ -1,3 +1,75 @@
+// share code
+var HALF_STARCODE = "&#xF123;";
+var FULL_STARCODE = "&#xF005;";
+var EMPTY_STARCODE = "&#xF006;";
+
+function MovieEvent (eventid, eventHost, lo, ti) {
+	this.participates = {};
+	this.comrecoMoives = {};
+	this.loca = lo;
+	this.time = ti;
+	this.eventID = eventid;
+	this.selectedMovies = {};
+	this.host = eventHost;
+
+	this.addParticipate = function (parti) {
+		if (this.participates[parti.fbID] == undefined) {
+			this.participates[parti.fbID] = new Participate();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	this.addComrecoMovies = function (movie) {
+		if (this.comrecoMoives[movie.movieID] == undefined) {
+			this.comrecoMoives[movie.movieID] = movie;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	this.addSelectedMovies = function (movie) {
+		if (this.selectedMovies[movie.movieID] == undefined) {
+			this.selectedMovies[movie.movieID] = movie;
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+function Participate () {
+	this.name = "";
+	this.fbID = "";
+	this.photourl = "";
+	this.recommandMoives = {};
+	this.friendList = {};
+	this.isHost = false;
+	this.online = false;
+
+	this.addRecommandMovies = function (movie) {
+		if (this.recommandMoives[movie.movieID] == undefined) {
+			this.recommandMoives[movie.movieID] = movie;
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+function Movie () {
+	this.movieID = "";
+	this.title = "";
+	this.imgurl = "";
+	this.score = 0;
+	this.pgRate = "";
+	this.description = "";
+	this.vote = 0;
+}
+
+///////////////////
 // Client Code
 var OffScreenNav = {
 	nav: $("#offscreen-nav"),
@@ -43,40 +115,51 @@ var OffScreenNav = {
 	}
 };
 
+
+function addRate(ratingObj, rate) {
+	for (var i = 0; i < 10; i++) {
+		if (i < rate && i + 1 > rate) {
+			ratingObj.append("<span>" + HALF_STARCODE + "</span>");
+		} else if (i < rate) {
+			ratingObj.append("<span>" + FULL_STARCODE + "</span>");
+		} else {
+			ratingObj.append("<span>" + EMPTY_STARCODE + "</span>");
+		}
+	}
+}
+
 $(document).ready(function(){
 	OffScreenNav.init();
+	function init() {
+		FB.init({
+			appId: '389973247769015',
+			status: true,
+			cookie: true,
+			xfbml: true
+		});
+		FB.getLoginStatus(function(response) {
+			if (response.status == "connected") {
+				showFriendsList();
+			}
+		});
+	}
 
-function init() {
-    FB.init({
-        appId: '389973247769015',
-        status: true, 
-        cookie: true, 
-        xfbml: true
-    });
-   FB.getLoginStatus(function(response) {
-          if (response.status == "connected") {
-              showFriendsList();
-          }
-    });
-}
+	init();
 
-init();
-
-var friends=[];
-function showFriendsList() {
-    FB.api('/me/friends', showFriend);
-}
+	var friends=[];
+	function showFriendsList() {
+		FB.api('/me/friends', showFriend);
+	}
 
 
-function showFriend(response) {
-    var data = response.data;
-    count = data.length;
-    for (var i = 0; i < data.length; i++) {
-        var obj  = {'id':data[i].id, 'label':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
-        friends.push(obj);
-        console.log(obj);
-    }
-}
+	function showFriend(response) {
+		var data = response.data;
+		count = data.length;
+		for (var i = 0; i < data.length; i++) {
+			var obj  = {'id':data[i].id, 'label':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
+			friends.push(obj);
+		}
+	}
 
 
 
@@ -102,15 +185,15 @@ function showFriend(response) {
 	$( "#sortable" ).sortable();
 
 	$("#select").autocomplete({
-            minLength: 0,
-            source: friends,
-			select: function(e, obj) {
-				$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-				$(".close").on('click', function()
-						{
-							$(this).parent().hide("slide",{direction:"left"},"slow");
-						});
-			}
+		minLength: 0,
+		source: friends,
+		select: function(e, obj) {
+			$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+			$(".close").on('click', function()
+				{
+					$(this).parent().hide("slide",{direction:"left"},"slow");
+				});
+		}
 
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
 		return $("<li/>")
