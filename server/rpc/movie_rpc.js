@@ -5,7 +5,7 @@ var EMPTY_STARCODE = "&#xF006;";
 
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
-	this.comrecoMoives = {};
+	this.comrecoMovies = {};
 	this.loca = lo;
 	this.time = ti;
 	this.eventID = eventid;
@@ -25,8 +25,8 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	}
 
 	this.addComrecoMovies = function (movie) {
-		if (this.comrecoMoives[movie.movieID] == undefined) {
-			this.comrecoMoives[movie.movieID] = movie;
+		if (this.comrecoMovies[movie.movieID] == undefined) {
+			this.comrecoMovies[movie.movieID] = movie;
 			return true;
 		} else {
 			return false;
@@ -49,14 +49,14 @@ function Participate () {
 	this.name = "";
 	this.fbID = "";
 	this.photourl = "";
-	this.recommandMoives = {};
+	this.recommandMovies = {};
 	this.friendList = {};
 	this.isHost = false;
-	this.online = false;
+	this.isOnline = false;
 
 	this.addRecommandMovies = function (movie) {
-		if (this.recommandMoives[movie.movieID] == undefined) {
-			this.recommandMoives[movie.movieID] = movie;
+		if (this.recommandMovies[movie.movieID] == undefined) {
+			this.recommandMovies[movie.movieID] = movie;
 			return true;
 		} else {
 			return false;
@@ -97,6 +97,8 @@ exports.actions = function(req, res, ss) {
 				var thisEvent = new MovieEvent(eventID, parti, loca, time);
 				allEvent[eventID] = thisEvent;
 				eventCounter++;
+			} else {
+				thisEvent = allEvent[eventID];
 			}
 
 			if (allEvent[eventID] === undefined) {
@@ -112,6 +114,20 @@ exports.actions = function(req, res, ss) {
 		},
 
 		partiOffline: function(eventID, parti) {
+			var thisEvent = allEvent[eventID];
+			if (thisEvent === undefined) {
+				console.log("!!!!!!! undefined Event", eventID);
+			}
+		},
+
+		thisPartiVote: function(eventID, movie) {
+			var thisEvent = allEvent[eventID];
+			if (thisEvent === undefined) {
+				console.log("!!!!!!! undefined Event", eventID);
+			}
+			thisEvent.addSelectedMovies(movie);
+			thisEvent.selectedMovies[movie.movieID].vote++;
+			ss.publish.channel(eventID, 'partiVote', movie);
 		},
 
 	};

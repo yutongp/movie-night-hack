@@ -5,7 +5,7 @@ var EMPTY_STARCODE = "&#xF006;";
 
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
-	this.comrecoMoives = {};
+	this.comrecoMovies = {};
 	this.loca = lo;
 	this.time = ti;
 	this.eventID = eventid;
@@ -22,8 +22,8 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	}
 
 	this.addComrecoMovies = function (movie) {
-		if (this.comrecoMoives[movie.movieID] == undefined) {
-			this.comrecoMoives[movie.movieID] = movie;
+		if (this.comrecoMovies[movie.movieID] == undefined) {
+			this.comrecoMovies[movie.movieID] = movie;
 			return true;
 		} else {
 			return false;
@@ -44,14 +44,14 @@ function Participate () {
 	this.name = "";
 	this.fbID = "";
 	this.photourl = "";
-	this.recommandMoives = {};
+	this.recommandMovies = {};
 	this.friendList = {};
 	this.isHost = false;
-	this.online = false;
+	this.isOnline = false;
 
 	this.addRecommandMovies = function (movie) {
-		if (this.recommandMoives[movie.movieID] == undefined) {
-			this.recommandMoives[movie.movieID] = movie;
+		if (this.recommandMovies[movie.movieID] == undefined) {
+			this.recommandMovies[movie.movieID] = movie;
 			return true;
 		} else {
 			return false;
@@ -77,9 +77,9 @@ function Movie () {
 //
 
 
-var ourEvent = new MovieEvent(1, 2, 3, 4);
+var thisEvent = new MovieEvent(1, 2, 3, 4);
 var thisPrati = new Participate();
-var ourEventID = -1;
+var thisEventID = -1;
 
 
 ////////////////////
@@ -187,27 +187,32 @@ function addMovieContainer(movie, index, side) {
 }
 
 
-function voteOnComrecoMovies(selecter, callback) {
+function voteOnComrecoMovies(selecter) {
 	var mID = $(selecter).attr("movie-id");
 	var index = $(selecter).attr("panel-index");
 
-	console.log(mID);
-	console.log(index);
-	if (ourEvent.comrecoMoives[mID] != undefined) {
-		var votedmoive = ourEvent.comrecoMoives[mID];
-		votedmoive.vote++;
+	console.log("this parti vote on", mID);
+	console.log("this parti vote on", index);
+	if (thisEvent.comrecoMovies[mID] != undefined) {
+		var votedmovie = thisEvent.comrecoMovies[mID];
+		//TODO add vote in callback NOT HERE
+		//votedmovie.vote++;
 	} else {
 		alert("no voting movie!!");
 	}
-	if (votedmoive != undefined) {
-		callback(votedmoive);
+
+	if (votedmovie != undefined) {
+		ss.rpc("movie_rpc.thisPartiVote", thisEventID, votedmovie);
 	}
 }
 
+function addVoteOnMovie(movie){
+	//TODO add vote change order ...
+}
 
-function addtoSelectedMlist() {
+function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
-	console.log(d.title);
+	console.log("add", movie.title, "to selected Movie list");
 }
 
 $(document).ready(function(){
@@ -223,12 +228,12 @@ $(document).ready(function(){
 		addMovieContainer(aM, i, ".front");
 		addMovieContainer(aM, i, ".back");
 	}
-	ourEvent.addComrecoMovies(aM);
+	thisEvent.addComrecoMovies(aM);
 
 
 //For #rvote
 	$(".panel-vote").bind("click", function() {
-		voteOnComrecoMovies(this, addtoSelectedMlist);
+		voteOnComrecoMovies(this);
 	});
 
 	OffScreenNav.init();
@@ -307,23 +312,48 @@ $(document).ready(function(){
 			.appendTo(ul);
 	};
 
+	//// listen to the server /////
+	ss.event.on('newPartiOnline', function (parti) {
+		if (parti.fbID === thisPrati.fbID) {
+			return;
+		}
+		if (thisEvent.addParticipate(parti)) {
+			//TODO accpeted change status
+		} else {
+			thisEvent.participates[parti.fbID].isOnline = true;
+			//TODO light up online icon;
+		}
+	});
+
+	ss.event.on('partiVote', function (movie){
+		if (thisEvent.addSelectedMovies(movie)) {
+			//TODO not on list, add to list;
+			addtoSelectedMlist(movie);
+		} else {
+			addVoteOnMovie(movie);
+			//TODO on list, add on vote number;
+		}
+	});
+
+	//////
 	joinMovieEvent();
 });
 
 
 function joinMovieEvent() {
-	ourEventID = (GETURLV.eventID === undefined)
+	thisEventID = (GETURLV.eventID === undefined)
 				? -1
 				: GETURLV.eventID;
 
-	if (ourEventID === -1) {
+	if (thisEventID === -1) {
 		thisPrati.isHost = true;
 	}
 
-	console.log(ourEventID);
+	console.log("url eventID:", thisEventID);
 	var loca = "Arizona";
 	var time = "Now";
-	ss.rpc("movie_rpc.joinEvent", ourEventID, thisPrati, loca, time, function(serverEvent){
-		ourEventID = serverEvent.eventID;
+	ss.rpc("movie_rpc.joinEvent", thisEventID, thisPrati, loca, time, function(serverEvent){
+		console.log("joined event:", serverEvent.eventID);
+		thisEventID = serverEvent.eventID;
 	});
 }
