@@ -84,6 +84,14 @@ var thisEventID = -1;
 var RECOMMANDNUM = 8;
 var friends=[];
 
+///////////////////////
+var movieList = new Array();
+var count;
+var friends_invited = ['100006228727252'];
+var friends;
+var relatedMovies;
+/////////////////////////////
+
 ////////////////////
 ////
 // Client Side Code
