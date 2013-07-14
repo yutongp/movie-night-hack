@@ -133,7 +133,7 @@ function getRelatedMovies(name)
 	$.get(urlId, function (response) {
 		if (response.movies.length > 0) {
 			var id = response.movies[0].id;
-			alert(response.movies[0].title);
+			//alert(response.movies[0].title);
 			var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies/'
 		+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
 
@@ -157,7 +157,7 @@ function getIMDBInfo(data) {
 	//alert('title: ' + data.title + ', id: ' + id);
 
 	$.get(url, function (response) {
-		alert("Find " + response.Title);
+		//alert("Find " + response.Title);
 
 		data.title = response.Title;
 		data.year = response.Year;
@@ -339,13 +339,54 @@ function voteOnComrecoMovies(selecter) {
 	}
 }
 
-function addVoteOnMovie(movie){
-	//TODO add vote change order ...
+function addVoteOnMovie(id){
+	//TODO add vote change order ... 
+    var value = $("span1."+id).text();
+    var count = 0;
+    if (value)
+    {
+        count=parseInt(value)+1;
+    }
+    else
+    {
+        count=count+1;
+    }
+    $("span1."+id).text(count);
+}
 
+function removeVoteOnMovie(id)
+{
+    var value = parseInt($("span1."+id).text());
+    var count = 0;
+    if (value>0)
+    {
+        count=parseInt(value)-1;
+    }
+    else
+    {
+        count=0;
+    }
+    $("span1."+id).text(count);
 }
 
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
+            $('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().prependTo(".voting").show("slide", {direction:"left"},"fast");
+            $('.upvote').on('click', function()
+            {
+                console.log($(this).parent().find('span1').text());
+                var id = parseInt($(this).parent().find('span1').attr('class'));
+                addVoteOnMovie(id);
+
+            });
+            $('.downvote').on('click', function()
+            {
+                  var id = parseInt($(this).parent().find('span1').attr('class'));
+                  removeVoteOnMovie(id);
+
+            });
+            addVoteOnMovie(movie.movieID);
+	console.log("add", movie.title, "to selected Movie list");
 }
 
 $(document).ready(function(){
@@ -418,7 +459,7 @@ $(document).ready(function(){
 			//TODO not on list, add to list;
 			addtoSelectedMlist(movie);
 		} else {
-			addVoteOnMovie(movie);
+			addVoteOnMovie(movie.movieID);
 			//TODO on list, add on vote number;
 		}
 	});
