@@ -18,8 +18,8 @@ ss.http.route('/', function(req, res){
 
 ss.client.define('test', {
 	view: 'test.html',
-	css:  ['styletest.css','bootstrap.min.css'],
-	code: ['libs/jquery.min.js', 'app'],
+	css:  ['bootstrap.min.css', 'jquery-ui-1.10.3.custom.css', 'styletest.css'],
+	code: ['libs/jquery.min.js', 'libs/jquery-ui-1.10.3.custom.js', 'app'],
 	tmpl: '*'
 });
 
