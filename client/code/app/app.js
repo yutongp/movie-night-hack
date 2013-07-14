@@ -215,7 +215,8 @@ function addVoteOnMovie(movie){
 var selected_list = {};
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
-        
+           var id = movie.movieID;
+           if  
            $('<li class="ui-state-default"><i class="icon-arrow-up"></i><i class="icon-arrow-down"></i><img class="friend-avatar" src=' + movie.imgurl + '>   ' + movie.title + '</li>').hide().prependTo(".voting").show("slide", {direction:"left"},"fast"); 
 	console.log("add", movie.title, "to selected Movie list");
 }
