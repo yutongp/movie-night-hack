@@ -7,7 +7,7 @@ var http = require('http'),
 ss.client.define('main', {
 	view: 'app.html',
 	css:  ['style.css','bootstrap.min.css','jquery-ui-1.10.3.custom.css'],
-	code: ['libs/jquery.min.js','libs/jquery-ui-1.10.3.custom.js','app'],
+	code: ['libs/jquery.min.js','libs/jquery-ui-1.10.3.custom.js','libs/all.js','app'],
 	tmpl: '*'
 });
 
@@ -19,7 +19,7 @@ ss.http.route('/', function(req, res){
 ss.client.define('test', {
 	view: 'test.html',
 	css:  ['bootstrap.min.css', 'jquery-ui-1.10.3.custom.css', 'styletest.css'],
-	code: ['libs/jquery.min.js', 'libs/jquery-ui-1.10.3.custom.js', 'app'],
+	code: ['libs/jquery.min.js', 'libs/jquery-ui-1.10.3.custom.js', 'libs/all.js','app'],
 	tmpl: '*'
 });
 
@@ -46,7 +46,7 @@ if (ss.env === 'production') ss.client.packAssets();
 
 // Start web server
 var server = http.Server(ss.http.middleware);
-server.listen(3000);
+server.listen(8080);
 
 // Start SocketStream
 ss.start(server);
