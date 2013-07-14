@@ -24,6 +24,7 @@
 		<link rel="shortcut icon" href="http://twitter.github.io/bootstrap/assets/ico/favicon.png">
 	</head>
 
+
 	<body>
 		<div class="container-narrow">
 
@@ -41,6 +42,11 @@
 			<div class="jumbotron">
 				<h1>Movie Night!</h1>
 				<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                <div id="login">
+                <fb:login-button autologoutlink="true" perms="user_likes, friends_likes,create_event,publish_stream"
+                onlogin="window.location.href='/test'">
+                </fb:login-button>
+                </div>
 				<a class="btn btn-large btn-success"
 					href="http://twitter.github.io/bootstrap/examples/marketing-narrow.html#">Connect</a>
 			</div>

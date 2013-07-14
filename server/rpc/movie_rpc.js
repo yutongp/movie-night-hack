@@ -1,9 +1,13 @@
+allEvent = {};
+
+require('../server_app/data');
 exports.actions = function(req, res, ss) {
 
 	// Example of pre-loading sessions into req.session using internal middleware
 	req.use('session');
 	var query = require('url').parse(req.url,true).query;
 	console.log(query);
+
 
 	return {
 		joinEvent: function (eventID) {

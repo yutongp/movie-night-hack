@@ -1,7 +1,4 @@
 // Client Code
-
-
-
 var OffScreenNav = {
 	nav: $("#offscreen-nav"),
 	closeButton: $("#effeckt-off-screen-nav-close"),
