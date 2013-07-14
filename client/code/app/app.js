@@ -340,33 +340,17 @@ function voteOnComrecoMovies(selecter) {
 }
 
 function addVoteOnMovie(id){
-	//TODO add vote change order ... 
-    var value = $("span1."+id).text();
-    var count = 0;
-    if (value)
-    {
-        count=parseInt(value)+1;
-    }
-    else
-    {
-        count=count+1;
-    }
-    $("span1."+id).text(count);
-}
-
-function removeVoteOnMovie(id)
-{
-    var value = parseInt($("span1."+id).text());
-    var count = 0;
+	//TODO add vote change order ...
+    var value = thisEvent.selectedMovies[id].vote; 
+    console.log(value);
     if (value>0)
     {
-        count=parseInt(value)-1;
+        $("span1."+id).text(value);
     }
     else
     {
-        count=0;
+        $("span1."+id).text(0);
     }
-    $("span1."+id).text(count);
 }
 
 function addtoSelectedMlist(movie) {
@@ -376,14 +360,13 @@ function addtoSelectedMlist(movie) {
             {
                 console.log($(this).parent().find('span1').text());
                 var id = parseInt($(this).parent().find('span1').attr('class'));
-                addVoteOnMovie(id);
+                ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],true);
 
             });
             $('.downvote').on('click', function()
             {
                   var id = parseInt($(this).parent().find('span1').attr('class'));
-                  removeVoteOnMovie(id);
-
+                  ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],false);
             });
             addVoteOnMovie(movie.movieID);
 	console.log("add", movie.title, "to selected Movie list");
