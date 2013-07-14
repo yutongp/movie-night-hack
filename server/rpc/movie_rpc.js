@@ -90,7 +90,6 @@ exports.actions = function(req, res, ss) {
 
 	return {
 		joinEvent: function (eventID, parti, loca, time) {
-			console.log(eventID);
 			if (eventID === -1) {
 				// new event
 				eventID = eventCounter;
@@ -98,13 +97,15 @@ exports.actions = function(req, res, ss) {
 				allEvent[eventID] = thisEvent;
 				eventCounter++;
 			} else {
+				// add event
 				thisEvent = allEvent[eventID];
 			}
 
 			if (allEvent[eventID] === undefined) {
-				return false;
+				return res(false);
 			}
 
+			console.log("server set event", eventID)
 			thisEvent.addParticipate(parti);
 			//TODO update list
 			req.session.channel.subscribe(eventID);

@@ -77,10 +77,11 @@ function Movie () {
 //
 
 
-var thisEvent = new MovieEvent(1, 2, 3, 4);
+var thisEvent;
 var thisPrati = new Participate();
 var thisEventID = -1;
 
+var RECOMMANDNUM = 8;
 
 ////////////////////
 ////
@@ -160,6 +161,14 @@ var OffScreenNav = {
 };
 
 
+function appendPanel() {
+	//TODO change i back to 0
+	for (var i = 0; i < 8; i++) {
+		$(".movie-container").append(ss.tmpl['panel'].render({panel_index: i}));
+	}
+}
+
+
 function addRate(ratingObj, rate) {
 	var ratingStar = "";
 	for (var i = 0; i < 10; i++) {
@@ -216,21 +225,8 @@ function addtoSelectedMlist(movie) {
 }
 
 $(document).ready(function(){
-	var aM = new Movie();
-	aM.title = "Inception";
-	aM.movieID = 10222;
-	aM.imgurl = 'http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg';
-	aM.rate = 8.4;
-	aM.genre = 'action';
-	aM.pgRate = "PG-13";
-	aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
-	for (var i = 0; i < 8; i++) {
-		addMovieContainer(aM, i, ".front");
-		addMovieContainer(aM, i, ".back");
-	}
-	thisEvent.addComrecoMovies(aM);
 
-
+	appendPanel();
 //For #rvote
 	$(".panel-vote").bind("click", function() {
 		voteOnComrecoMovies(this);
@@ -345,15 +341,32 @@ function joinMovieEvent() {
 				? -1
 				: GETURLV.eventID;
 
+	var loca = "";
+	var time = "";
 	if (thisEventID === -1) {
 		thisPrati.isHost = true;
+		var loca = "Arizona";
+		var time = "Now";
 	}
 
 	console.log("url eventID:", thisEventID);
-	var loca = "Arizona";
-	var time = "Now";
 	ss.rpc("movie_rpc.joinEvent", thisEventID, thisPrati, loca, time, function(serverEvent){
 		console.log("joined event:", serverEvent.eventID);
 		thisEventID = serverEvent.eventID;
+		thisEvent = new MovieEvent(thisEventID, serverEvent.host, serverEvent.loca, serverEvent.time);
+		//TODO show movie
+		var aM = new Movie();
+		aM.title = "Inception";
+		aM.movieID = 10222;
+		aM.imgurl = 'http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg';
+		aM.rate = 8.4;
+		aM.genre = 'action';
+		aM.pgRate = "PG-13";
+		aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
+		for (var i = 0; i < RECOMMANDNUM; i++) {
+			addMovieContainer(aM, i, ".front");
+			addMovieContainer(aM, i, ".back");
+		}
+		thisEvent.addComrecoMovies(aM);
 	});
 }
