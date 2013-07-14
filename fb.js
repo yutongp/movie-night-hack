@@ -8,26 +8,26 @@ var owner = true;
 
 function init() {
 	FB.init({
-        appId: '389973247769015',
-        status: true, 
-        cookie: true, 
-        xfbml: true
-    });
-    FB.getLoginStatus(function(response) {
-    	  if (response.status == "connected") {
-    		  thisEvent.addParticipate(thisPrati);
-    		  
-    		  if (owner = true) {
-    			  showFriendsList();
-    		  }
-    		  
-    		  FB.api("/me", function (response) {
-    			  updateParticipate(thisPrati, response);
-    			  getMovies(response.id);
-    			  getMovies(100006228727252);
-    	      });
-    	  }
-    });
+		appId: '389973247769015',
+		status: true,
+		cookie: true,
+		xfbml: true
+	});
+	FB.getLoginStatus(function(response) {
+		if (response.status == "connected") {
+			thisEvent.addParticipate(thisPrati);
+
+			if (owner = true) {
+				showFriendsList();
+			}
+
+			FB.api("/me", function (response) {
+				updateParticipate(thisPrati, response);
+				getMovies(response.id);
+				getMovies(100006228727252);
+			});
+		}
+	});
 }
 
 
@@ -64,7 +64,7 @@ function updateFriends(participant, friends) {
 		friend.photourl = 'http://graph.facebook.com/' + friends[i].id + '/picture';
 		participant.addFriend(friend);
 	}
-	
+
 	//alert(participant.friendList[friends[0].id].name);
 }
 
@@ -74,8 +74,8 @@ function updateFriends(participant, friends) {
 function getMovies(id) {
 	FB.api('/' + id + '/movies', function (response) {
 		for (var i = 0; i < response.data.length; i++) {
-	    	getRelatedMovies(response.data[i].name);
-	    }
+			getRelatedMovies(response.data[i].name);
+		}
 	});
 }
 
@@ -83,18 +83,18 @@ function getRelatedMovies(name)
 {
 	var urlId = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=jm483swc8eux9rgtcn7hjndz&q='
 		+ name + '&page_limit=1';
-	
+
 	$.get(urlId, function (response) {
 		if (response.movies.length > 0) {
 			var id = response.movies[0].id;
 			alert(response.movies[0].title);
 			var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies/'
-				+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
-			
-			$.get(url, calculateFrequency, "jsonp");
+		+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
+
+	$.get(url, calculateFrequency, "jsonp");
 		}
 	}, "jsonp");
-	
+
 }
 
 function calculateFrequency(response)
@@ -109,10 +109,10 @@ function getIMDBInfo(data) {
 	var id = data.alternate_ids.imdb;
 	var url = 'http://www.omdbapi.com/?i=tt' + id;
 	//alert('title: ' + data.title + ', id: ' + id);
-	
+
 	$.get(url, function (response) {
 		alert("Find " + response.Title);
-		
+
 		data.title = response.Title;
 		data.year = response.Year;
 		data.imdb_url = response.imdb_url;
@@ -123,7 +123,7 @@ function getIMDBInfo(data) {
 		data.poster = response.Poster;
 		data.genre = response.Genre;
 		data.plot = response.Plot;
-		
+
 		updateFrequency(data);
 	}, "json");
 }
@@ -149,29 +149,29 @@ function popularMovies(movieA, movieB) {
 }
 
 function updateFrequency(data) {
-    var flag = false;
-    for (var i = 0; i < movieList.length; i++)
-    {
-    	if (movieList[i].title == data.title) {
-    		movieList[i].count++;
-    		flag = true;
-    	}
-    }
-    if (flag == false) {
-    	data.count = 1;
-    	movieList = movieList.concat(data);
-    }
-    
-    movieList.sort(popularMovies);
-    
-    updateMovies(movieList);
-    
-    displayResults();
+	var flag = false;
+	for (var i = 0; i < movieList.length; i++)
+	{
+		if (movieList[i].title == data.title) {
+			movieList[i].count++;
+			flag = true;
+		}
+	}
+	if (flag == false) {
+		data.count = 1;
+		movieList = movieList.concat(data);
+	}
+
+	movieList.sort(popularMovies);
+
+	updateMovies(movieList);
+
+	displayResults();
 }
 
 function updateMovies(movieList) {
 	thisEvent.comrecoMovies = {};
-	
+
 	for (var i = 0; i < movieList.length; i++) {
 		var movie = new Movie();
 		var data = movieList[i];
@@ -183,11 +183,11 @@ function updateMovies(movieList) {
 		movie.pgRate = data.rated;
 		movie.rate = data.rating;
 		movie.count = data.count;
-		
+
 		thisEvent.addComrecoMovies(movie);
 	}
-	
-	
+
+
 }
 
 function displayResults() {
@@ -196,11 +196,11 @@ function displayResults() {
 		var divMovie = document.createElement("div");
 		var data = thisEvent.comrecoMovies[movieList[i].alternate_ids.imdb];
 		divMovie.innerHTML = data.title + "<br>" 
-		+ "Country: " + data.country + "<br>"
-		+ "Rating: " + data.rate + "<br>"
-		+ "Genre: " + data.genre + "<br>"
-		+ "Count: " + data.count + "<br><br><br>"; 
-		
+			+ "Country: " + data.country + "<br>"
+			+ "Rating: " + data.rate + "<br>"
+			+ "Genre: " + data.genre + "<br>"
+			+ "Count: " + data.count + "<br><br><br>"; 
+
 		document.getElementById('movies').appendChild(divMovie);
 	}
 }
@@ -210,30 +210,30 @@ function displayResults() {
 
 function ShowMyName(name, description, location, start_time) {
 	var event = {
-			name: name, 
-		    description: description,
-		    location: location,                        
-		    start_time: start_time
+		name: name, 
+		description: description,
+		location: location,                        
+		start_time: start_time
 	};
-	
+
 	FB.api('/me/events', 'post' , event, invite);
 }
 
 function invite(response) {
 	alert("event id: " + response.id);
 	var feed = {
-			//link : 'http://127.0.0.1:8080/facebook.html',
-			//description : 'I have created my own movie night just now! Do you want to have a try?'
-			message: '@Yutong Pei'
+		//link : 'http://127.0.0.1:8080/facebook.html',
+		//description : 'I have created my own movie night just now! Do you want to have a try?'
+		message: '@Yutong Pei'
 	};
 	for (var i = 0; i < friends_invited.length; i++) {
-		
+
 	}
-	
+
 	FB.api('/me/feed', 'post', feed, function(resp) {
 		alert(resp.id);
 	});
-	
+
 }
 
 
