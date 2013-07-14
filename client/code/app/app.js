@@ -182,9 +182,6 @@ $(document).ready(function(){
 		}
 	}
 
-
-
-
 	$('.panel').toggle(function(){
 		$(this).addClass('flip');
 	},function(){
@@ -205,17 +202,24 @@ $(document).ready(function(){
 
 	$( "#sortable" ).sortable();
 
+    var hash = {};
 	$("#select").autocomplete({
-		minLength: 0,
-		source: friends,
-		select: function(e, obj) {
-			$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-			$(".close").on('click', function()
-				{
-					$(this).parent().hide("slide",{direction:"left"},"slow");
-				});
-		}
-
+            source: friends,
+            close: function(e,obj) {
+                $("#select").val("");
+            },
+			select: function(e, obj) {
+                var label = obj.item.label;
+                if(!(label in hash))
+                {
+				    $('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+                    hash[obj.item.label]=1
+				    $(".close").on('click', function()
+						{
+							$(this).parent().hide("slide",{direction:"left"},"slow");
+						});
+                }
+			}
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
 		return $("<li/>")
 			.append('<a><img class="friend-avatar" src='+item.pic+'/>' + item.label + '</a>')
