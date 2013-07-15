@@ -558,12 +558,29 @@ $(document).ready(function(){
 		e.preventDefault();
 	});
 
+    $(".btn").on('click', function(e) {
+       var genre = $(this).attr('value');
+       $('.panel').each(function(){
+           var re = new RegExp(genre, 'i')
+           //console.log("title "+$(this).find('.panel-title').text());
+           //console.log("description: "+$(this).find('.panel-description').text());
+           if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
+               $(this).find('.panel-description').text().match(re)){
+           console.log($(this).parent().html());
+           $(this).fadeIn("medium");
+           }else{
+           $(this).fadeOut("medium");
+           };
+
+        });
+
+    });
+
 	$(".filter").keyup(function(e) {
 		$('.panel').each(function(){
 			var re = new RegExp($('.filter').val(), 'i')
 			//console.log("title "+$(this).find('.panel-title').text());
 			//console.log("description: "+$(this).find('.panel-description').text());
-
                 if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
                     $(this).find('.panel-description').text().match(re)){
                 console.log($(this).parent().html());
@@ -599,6 +616,7 @@ $(document).ready(function(){
 
     var hash_chat_heads = {};
 	$('.invite-new-friend-close').bind("click", function(){
+        $("#sortable").empty();
 		$("#offscreen-addfriend").css("top", "100%");
 		console.log(invited_friends_ids);
         console.log(invited_friends_objects);
@@ -645,6 +663,18 @@ $(document).ready(function(){
             invited_friends_ids.push(obj.item.id);
             invited_friends_objects.push(obj.item);
 		    $(".close").on('click', function(){
+                var pic = $(this).parent().find('img').attr('src');
+                var temp = [];
+                for(var i=0;i<invited_friends_objects.length;i++)
+                {
+                        console.log(invited_friends_objects[i].pic);
+                        console.log(pic);
+                        if(invited_friends_objects[i].pic+"/"!=pic)
+                            temp.push(invited_friends_objects[i]);
+                }
+                console.log("invited " +invited_friends_objects);
+                console.log("temp "+temp);
+                invited_friends_objects = temp;
 				$(this).parent().hide("slide",{direction:"left"},"slow");
 			});
 	    }   
