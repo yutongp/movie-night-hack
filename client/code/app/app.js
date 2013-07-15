@@ -447,7 +447,7 @@ function sortVotingList()
 
 function updateComrecoMovies () {
 	//talk to server
-	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies, thisEventID.movieList);
+	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies, thisEvent.movieList);
 }
 
 function addSelectedMoviesNewComer(selectedMovies)
@@ -495,6 +495,13 @@ function flipPanel(ind, side) {
 	}
 }
 
+function getUsername(uid) {
+	FB.api("/" + uid, function (response) {
+		console.log(response.username);
+		return response.username;
+	});
+}
+
 
 function facebookInit() {
 	FB.init({
@@ -506,6 +513,7 @@ function facebookInit() {
 	FB.getLoginStatus(function(response) {
 		if (response.status == "connected") {
 			FB.api("/me", function (response) {
+				getUsername(100001556441768);
 				updateParticipate(thisPrati, response);
 				joinMovieEvent();
 				//getMovies(100006228727252);
