@@ -451,13 +451,13 @@ function updateComrecoMovies () {
 
 function addSelectedMoviesNewComer(selectedMovies)
 {
-    for(var i=0;i<selectedMovies.length;i++)
-        addtoSelectedMlist(selectedMovies[i]);
+    for(var key in selectedMovies)
+        addtoSelectedMlist(selectedMovies[key]);
 }
 
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
-		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().prependTo(".voting").show("slide", {direction:"right"},"fast");
+		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().appendTo(".voting").show("slide", {direction:"right"},"fast");
     bind_events();
 	addVoteOnMovie(movie);
 	console.log("add", movie.title, "to selected Movie list");
