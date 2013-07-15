@@ -343,7 +343,7 @@ function playTrailer(name) {
 	$.get(url, function (response) {
 		var link = response.feed.entry[0].media$group.media$content[0].url;
 		console.log(link);
-		window.open(link, "_blank");
+		window.open(link, '_blank','height=600,width=980,top=300,left=430,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
 	}, "json");
 }
 
