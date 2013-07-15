@@ -577,17 +577,24 @@ $(document).ready(function(){
 	$('.invite-new-friend-close').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "100%");
 		console.log(invited_friends_ids);
-		for(var i=0;i<invited_friends_ids.length;i++)
-	{
-		get_user_name(invited_friends_ids[i], function(username){
-			invited_friends_names.push(username);
-			if(invited_friends_ids.length == invited_friends_names.length) {
-				console.log(invited_friends_names);
-				ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_names);
-			}
+        console.log(invited_friends_objects);
+        for(var i=0;i<invited_friends_objects.length;i++)
+        {
+            var friend = invited_friends_objects[i];
+            $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.pic + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
 
-		});
-	}
+        }
+		for(var i=0;i<invited_friends_ids.length;i++)
+	    {
+		    get_user_name(invited_friends_ids[i], function(username){
+			    invited_friends_names.push(username);
+			    if(invited_friends_ids.length == invited_friends_names.length) {
+				    console.log(invited_friends_names);
+				    ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_names);
+			    }
+
+		    });
+	    }   
 	});
 
 	$( "#sortable" ).sortable();
@@ -595,6 +602,7 @@ $(document).ready(function(){
 	var hash = {};
     var invited_friends_ids = [];
     var invited_friends_names = [];
+    var invited_friends_objects = [];
 	$("#select").autocomplete({
 		source: friends,
 		close: function(e,obj) {
@@ -603,15 +611,15 @@ $(document).ready(function(){
 		select: function(e, obj) {
 			var label = obj.item.label;
 			if(!(label in hash))
-	{
-		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-		hash[obj.item.label]=1
-        invited_friends_ids.push(obj.item.id);
-		$(".close").on('click', function()
-			{
+	        {
+		        $('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+		    hash[obj.item.label]=1
+            invited_friends_ids.push(obj.item.id);
+            invited_friends_objects.push(obj.item);
+		    $(".close").on('click', function(){
 				$(this).parent().hide("slide",{direction:"left"},"slow");
 			});
-	}
+	    }   
 		}
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
 		return $("<li/>")
