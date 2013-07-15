@@ -203,7 +203,7 @@ exports.actions = function(req, res, ss) {
 					to: listm[i].usrname + "@facebook.com", // list of receivers
 					subject: "Amazon Movie Socials Invitation for " + name, // Subject line
 					text: "http://yutong.me/test?eventID=" + eventID, // plaintext body
-					html: '<a href="http://yutong.me/text?eventID=' + eventID + '">Accept Invitation</a>' // html body
+					html: '<a href="http://yutong.me/test?eventID=' + eventID + '">Accept Invitation</a>' // html body
 				}
 
 				// send mail with defined transport object
