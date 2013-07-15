@@ -2,7 +2,6 @@
 var HALF_STARCODE = "&#xF123;";
 var FULL_STARCODE = "&#xF005;";
 var EMPTY_STARCODE = "&#xF006;";
-var friends_invited = ['100006228727252', '100001503913338'];
 
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
@@ -267,7 +266,7 @@ function updateMoviesC(movieList) {
 	updateComrecoMovies();
 }
 
-function invite() {
+function invite(friends_invited) {
 	var requestURL = "https://www.facebook.com/dialog/apprequests?app_id=389973247769015"
 		+ "&message=I have invited you to my Movie Night!"
 		+ "&redirect_uri=http://127.0.0.1:8080/Hackday/facebook.html&response&"
@@ -553,12 +552,17 @@ $(document).ready(function(){
 		//$(this).removeClass('flip');
 	//});
 
-
+    var friends_invited = [];
 	$('.invite-new-friend').bind("click", function(){
+        console.log("heeeeey");
+        console.log(friends_invited);
+        //invite(friends_invited);
 		$("#offscreen-addfriend").css("top", "0%");
 	});
 
 	$('.invite-new-friend-close').bind("click", function(){
+        console.log("close clicked");
+        console.log(friends_invited);
 		$("#offscreen-addfriend").css("top", "100%");
 	});
 
@@ -576,6 +580,7 @@ $(document).ready(function(){
 	{
 		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
 		hash[obj.item.label]=1
+        friends_invited.push(obj.item.id);
 		$(".close").on('click', function()
 			{
 				$(this).parent().hide("slide",{direction:"left"},"slow");
