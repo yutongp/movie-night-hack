@@ -6,10 +6,11 @@ var EMPTY_STARCODE = "&#xF006;";
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
 	this.comrecoMovies = {};
+	this.selectedMovies = {};
+	this.sortedMovies = new Array();
 	this.loca = lo;
 	this.time = ti;
 	this.eventID = eventid;
-	this.selectedMovies = {};
 	this.host = eventHost;
 
 	this.addParticipate = function (parti) {
@@ -137,6 +138,16 @@ exports.actions = function(req, res, ss) {
 			}
 			ss.publish.channel(eventID, 'partiVote', thisEvent.selectedMovies[movie.movieID]);
 		},
+
+		updateComrecoMovies: function(evnetID, movies, sorted) {
+			var thisEvent = allEvent[eventID];
+			if (thisEvent === undefined) {
+				console.log("!!!!!!! undefined Event", eventID);
+			}
+			thisEvent.sortedMovies = sorted;
+			thisEvent.comrecoMovies = movies;
+			ss.publish.channel(eventID, 'updateMovies', movies, sorted);
+		}
 
 	};
 };

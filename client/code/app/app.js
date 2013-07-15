@@ -3,15 +3,14 @@ var HALF_STARCODE = "&#xF123;";
 var FULL_STARCODE = "&#xF005;";
 var EMPTY_STARCODE = "&#xF006;";
 
-var sortedMovies = new Array();
-
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
 	this.comrecoMovies = {};
+	this.selectedMovies = {};
+	this.sortedMovies = new Array();
 	this.loca = lo;
 	this.time = ti;
 	this.eventID = eventid;
-	this.selectedMovies = {};
 	this.host = eventHost;
 
 	this.addParticipate = function (parti) {
@@ -157,7 +156,6 @@ function calculateFrequency(response)
 {
 	for (var i = 0 ; i < response.movies.length; i++) {
 		getIMDBInfo(response.movies[i]);
-		//updateFrequency(response.movies[i]);
 	}
 }
 
@@ -227,6 +225,7 @@ function updateFrequency(data) {
 
 function updateMovies(movieList) {
 	thisEvent.comrecoMovies = {};
+	thisEvent.sortedMovies = [];
 
 	for (var i = 0; i < movieList.length; i++) {
 		var movie = new Movie();
@@ -241,7 +240,7 @@ function updateMovies(movieList) {
 		movie.count = data.count;
 
 		thisEvent.addComrecoMovies(movie);
-		sortedMovies.concat(movie);
+		thisEvent.sortedMovies.push(movie);
 	}
 	
 	updateComrecoMovies();
@@ -344,6 +343,9 @@ function voteOnComrecoMovies(selecter) {
 		//TODO add vote in callback NOT HERE
 		//votedmovie.vote++;
 	} else {
+		for (var key in thisEvent.comrecoMovies) {
+			console.log(key);
+		}
 		alert("no voting movie!!");
 	}
 
@@ -401,6 +403,11 @@ function sortVotingList()
     bind_events();
 }
 
+function updateComrecoMovies () {
+	//talk to server
+	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies);
+}
+
 
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
@@ -408,6 +415,11 @@ function addtoSelectedMlist(movie) {
     bind_events();
 	addVoteOnMovie(movie);
 	console.log("add", movie.title, "to selected Movie list");
+}
+
+
+function updatePanel() {
+
 }
 
 $(document).ready(function(){
@@ -485,6 +497,15 @@ $(document).ready(function(){
 		}
 	});
 
+	ss.event.on('updateMovies', function(reco, sorted){
+		thisEvent.comrecoMovies = reco;
+		thisEvent.sortedMovies =sorted;
+		for (key in thisEvent.comrecoMovies) {
+			console.log(thisEvent.comrecoMovies[key].title);
+		}
+		updatePanel();
+	});
+
 	//////
 	function facebookInit() {
 		FB.init({
@@ -548,33 +569,33 @@ function joinMovieEvent() {
 		}
 		showFriendsList();
 		//TODO show movie exist
-		var aM = new Movie();
-		aM.title = "Inception";
-		aM.movieID = 10222;
-		aM.imgurl = 'http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg';
-		aM.rate = 8.4;
-		aM.genre = 'action';
-		aM.pgRate = "PG-13";
-		aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
+		//var aM = new Movie();
+		//aM.title = "Inception";
+		//aM.movieID = 10222;
+		//aM.imgurl = 'http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg';
+		//aM.rate = 8.4;
+		//aM.genre = 'action';
+		//aM.pgRate = "PG-13";
+		//aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
 
-        
-		for (var i = 0; i < RECOMMANDNUM; i++) {
-			addMovieContainer(aM, i, ".front");
-			addMovieContainer(aM, i, ".back");
-		}
-		thisEvent.addComrecoMovies(aM);
-        
-        var movie2 = new Movie();
-        movie2.title = "Dark Knight Rises";
-        movie2.movieID = 111;
-        movie2.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg'
-        movie2.rate = 9.2;
-        movie2.genre = 'action,crime,thriller';
-        movie2.pgRate = "PG-13";
-        movie2.description = "Eight years on, a new evil rises from where the Batman and Commissioner Gordon tried to bury it, causing the Batman to resurface and fight to protect Gotham City... the very city which brands him an enemy."
-        addMovieContainer(movie2,2,".front");
-        addMovieContainer(movie2,2,".back");
-        thisEvent.addComrecoMovies(movie2);
+
+		//for (var i = 0; i < RECOMMANDNUM; i++) {
+			//addMovieContainer(aM, i, ".front");
+			//addMovieContainer(aM, i, ".back");
+		//}
+		//thisEvent.addComrecoMovies(aM);
+
+		//var movie2 = new Movie();
+		//movie2.title = "Dark Knight Rises";
+		//movie2.movieID = 111;
+		//movie2.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg'
+			//movie2.rate = 9.2;
+		//movie2.genre = 'action,crime,thriller';
+		//movie2.pgRate = "PG-13";
+		//movie2.description = "Eight years on, a new evil rises from where the Batman and Commissioner Gordon tried to bury it, causing the Batman to resurface and fight to protect Gotham City... the very city which brands him an enemy."
+			//addMovieContainer(movie2,2,".front");
+		//addMovieContainer(movie2,2,".back");
+		//thisEvent.addComrecoMovies(movie2);
 
 	});
 }
