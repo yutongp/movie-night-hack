@@ -574,6 +574,7 @@ $(document).ready(function(){
     }
 
 
+    var hash_chat_heads = {};
 	$('.invite-new-friend-close').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "100%");
 		console.log(invited_friends_ids);
@@ -581,8 +582,11 @@ $(document).ready(function(){
         for(var i=0;i<invited_friends_objects.length;i++)
         {
             var friend = invited_friends_objects[i];
-            $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.pic + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
-
+            if(!(friend.id in hash_chat_heads))
+            {
+                $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.pic + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+                hash_chat_heads[friend.id] = 1;
+            }
         }
 		for(var i=0;i<invited_friends_ids.length;i++)
 	    {
