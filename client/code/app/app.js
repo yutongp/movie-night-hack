@@ -48,6 +48,7 @@ function Participate () {
 	this.photourl = "";
 	this.recommandMovies = {};
 	this.friendList = {};
+	this.state = "";
 	this.isHost = false;
 	this.isOnline = false;
 
@@ -552,9 +553,11 @@ $(document).ready(function(){
 	//});
 
 
-	$('#invite-new-friend').toggle(function(){
+	$('.invite-new-friend').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "0%");
-	},function(){
+	});
+
+	$('.invite-new-friend-close').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "100%");
 	});
 

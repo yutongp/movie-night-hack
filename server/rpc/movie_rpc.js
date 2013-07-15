@@ -52,6 +52,7 @@ function Participate () {
 	this.photourl = "";
 	this.recommandMovies = {};
 	this.friendList = {};
+	this.state = "";
 	this.isHost = false;
 	this.isOnline = false;
 
