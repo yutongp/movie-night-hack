@@ -525,12 +525,13 @@ $(document).ready(function(){
 			//console.log("title "+$(this).find('.panel-title').text());
 			//console.log("description: "+$(this).find('.panel-description').text());
 
-			if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re)){
-				console.log($(this).parent().html());
-				$(this).fadeIn("medium");
-			}else{
-				$(this).fadeOut("medium");
-			};
+                if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
+                    $(this).find('.panel-description').text().match(re)){
+                console.log($(this).parent().html());
+                $(this).fadeIn("medium");
+                }else{
+                $(this).fadeOut("medium");
+                };
 
 		});
 	});
@@ -773,7 +774,100 @@ function joinMovieEvent() {
 		//thisEvent.addComrecoMovies(movie8);
 
 
+<<<<<<< Updated upstream
 
 
+=======
+        
+		for (var i = 0; i < RECOMMANDNUM; i++) {
+			addMovieContainer(aM, i, ".front");
+			addMovieContainer(aM, i, ".back");
+		}
+		thisEvent.addComrecoMovies(aM);
+        
+        var movie2 = new Movie();
+        movie2.title = "Dark Knight Rises";
+        movie2.movieID = 111;
+        movie2.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg'
+        movie2.rate = 8.6;
+        movie2.genre = 'action,crime,thriller';
+        movie2.pgRate = "PG-13";
+        movie2.description = "Eight years on, a new evil rises from where the Batman and Commissioner Gordon tried to bury it, causing the Batman to resurface and fight to protect Gotham City... the very city which brands him an enemy."
+        addMovieContainer(movie2,2,".front");
+        addMovieContainer(movie2,2,".back");
+        thisEvent.addComrecoMovies(movie2);
+
+        var movie3 = new Movie();
+        movie3.title = "Despicable Me";
+        movie3.movieID = 222;
+        movie3.imgurl = 'http://upload.wikimedia.org/wikipedia/en/d/db/Despicable_Me_Poster.jpg'
+        movie3.rate = 7.6;
+        movie3.genre = 'animation,comedy,crime';
+        movie3.pgRate = "PG-13";
+        movie3.description = "When a criminal mastermind uses a trio of orphan girls as pawns for a grand scheme, he finds their love is profoundly changing him for the better."
+        addMovieContainer(movie3,7,".front");
+        addMovieContainer(movie3,7,".back");
+        thisEvent.addComrecoMovies(movie3);
+
+        var movie4 = new Movie();
+        movie4.title = "Following";
+        movie4.movieID = 333;
+        movie4.imgurl = 'http://upload.wikimedia.org/wikipedia/en/5/55/Following_film_poster.jpg'
+        movie4.rate = 7.6;
+        movie4.genre = 'crime, drama, mystery';
+        movie4.pgRate = "R";
+        movie4.description = "A young writer who follows strangers for material meets a thief who takes him under his wing."
+        addMovieContainer(movie4,1,".front");
+        addMovieContainer(movie4,1,".back");
+        thisEvent.addComrecoMovies(movie4);
+        
+        var movie5 = new Movie();
+        movie5.title = "Memento";
+        movie5.movieID = 444;
+        movie5.imgurl = 'http://upload.wikimedia.org/wikipedia/en/c/c7/Memento_poster.jpg'
+        movie5.rate = 8.6;
+        movie5.genre = 'mystery,thriller';
+        movie5.pgRate = "R";
+        movie5.description = "A man, suffering from short-term memory loss, uses notes and tattoos to hunt for the man he thinks killed his wife."
+        addMovieContainer(movie5,3,".front");
+        addMovieContainer(movie5,3,".back");
+        thisEvent.addComrecoMovies(movie5);
+
+        var movie6 = new Movie();
+        movie6.title = "The Shawshank Redemption";
+        movie6.movieID = 555;
+        movie6.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg'
+        movie6.rate = 9.3;
+        movie6.genre = 'crime,drama';
+        movie6.pgRate = "R";
+        movie6.description = "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
+        addMovieContainer(movie6,4,".front");
+        addMovieContainer(movie6,4,".back");
+        thisEvent.addComrecoMovies(movie6);
+ 
+        var movie7 = new Movie();
+        movie7.title = "Howl's Moving Castle";
+        movie7.movieID = 666;
+        movie7.imgurl = 'http://upload.wikimedia.org/wikipedia/en/a/a0/Howls-moving-castleposter.jpg'
+        movie7.rate = 8.1;
+        movie7.genre = 'animation,action,adventure';
+        movie7.pgRate = "PG";
+        movie7.description = "When an unconfident young woman is cursed with an old body by a spiteful witch, her only chance of breaking the spell lies with a self-indulgent yet insecure young wizard and his companions in his legged, walking home."
+        addMovieContainer(movie7,5,".front");
+        addMovieContainer(movie7,5,".back");
+        thisEvent.addComrecoMovies(movie7);
+
+        var movie8 = new Movie();
+        movie8.title = "The Matrix";
+        movie8.movieID = 777;
+        movie8.imgurl = 'http://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg'
+        movie8.rate = 8.7;
+        movie8.genre = 'science-fiction,action,adventure';
+        movie8.pgRate = "R";
+        movie8.description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
+        addMovieContainer(movie8,6,".front");
+        addMovieContainer(movie8,6,".back");
+        thisEvent.addComrecoMovies(movie8);
+>>>>>>> Stashed changes
 	});
 }
