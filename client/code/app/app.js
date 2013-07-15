@@ -576,15 +576,18 @@ $(document).ready(function(){
 
 	$('.invite-new-friend-close').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "100%");
-        console.log(invited_friends_ids);
-        for(var i=0;i<invited_friends_ids.length;i++)
-        {
-            get_user_name(invited_friends_ids[i], function(username){
-                invited_friends_names.push(username);
-                if(invited_friends_ids.length == invited_friends_names.length)
-                    console.log(invited_friends_names);
-            });
-        }
+		console.log(invited_friends_ids);
+		for(var i=0;i<invited_friends_ids.length;i++)
+	{
+		get_user_name(invited_friends_ids[i], function(username){
+			invited_friends_names.push(username);
+			if(invited_friends_ids.length == invited_friends_names.length) {
+				console.log(invited_friends_names);
+				ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_names);
+			}
+
+		});
+	}
 	});
 
 	$( "#sortable" ).sortable();

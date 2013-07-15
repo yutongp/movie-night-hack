@@ -169,6 +169,7 @@ exports.actions = function(req, res, ss) {
 			}
 		},
 		sendInvite: function (eventID, name, listm) {
+				console.log(listm);
 			for (var i = 0; i < listm.length; i++) {
 
 				// setup e-mail data with unicode symbols
