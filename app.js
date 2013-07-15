@@ -1,6 +1,6 @@
 // My SocketStream 0.3 app
 
-var http = require('https'),
+var http = require('http'),
 	fs = require('fs'),
 	ss = require('socketstream');
 
@@ -51,8 +51,9 @@ ss.client.templateEngine.use(require('ss-hogan'));
 if (ss.env === 'production') ss.client.packAssets();
 
 // Start web server
-var server = http.Server(options, ss.http.middleware);
-server.listen(443);
+//var server = http.Server(options, ss.http.middleware);
+var server = http.Server(ss.http.middleware);
+server.listen(8080);
 
 // Start SocketStream
 ss.start(server);

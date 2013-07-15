@@ -3,6 +3,8 @@ var HALF_STARCODE = "&#xF123;";
 var FULL_STARCODE = "&#xF005;";
 var EMPTY_STARCODE = "&#xF006;";
 
+var sortedMovies = new Array();
+
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
 	this.comrecoMovies = {};
@@ -239,6 +241,7 @@ function updateMovies(movieList) {
 		movie.count = data.count;
 
 		thisEvent.addComrecoMovies(movie);
+		sortedMovies.concat(movie);
 	}
 	
 	updateComrecoMovies();
