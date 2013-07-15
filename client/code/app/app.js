@@ -250,7 +250,7 @@ function updateMoviesC(movieList) {
 
 	for (var i = 0; i < thisEvent.movieList.length; i++) {
 		var movie = new Movie();
-		var data = movieList[i];
+		var data = thisEvent.movieList[i];
 		movie.movieID = data.alternate_ids.imdb;
 		movie.title = data.title;
 		movie.description = data.plot;
@@ -264,6 +264,7 @@ function updateMoviesC(movieList) {
 		thisEvent.sortedMovies.push(movie);
 	}
 	
+	console.log("current result length: " + thisEvent.movieList.length);
 	updateComrecoMovies();
 }
 
@@ -729,6 +730,9 @@ function joinMovieEvent() {
 		thisEvent.sortedMovies = serverEvent.sortedMovies;
 		thisEvent.selectedMovies = serverEvent.selectedMovies;
 		thisEvent.movieList = serverEvent.movieList;
+		if (thisEvent.movieList === undefined) {
+			thisEvent.movieList = new Array();
+		}
 		thisEvent.host = serverEvent.host;
 
 
