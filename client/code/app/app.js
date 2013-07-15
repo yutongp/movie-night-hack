@@ -656,10 +656,15 @@ function joinMovieEvent() {
 		thisEvent.participates = serverEvent.participates;
 		thisEvent.comrecoMovies = serverEvent.comrecoMovies;
 		thisEvent.sortedMovies = serverEvent.sortedMovies;
+		thisEvent.selectdMovies = serverEvent.selectedMovies;
 		thisEvent.host = serverEvent.host;
+
+		console.log("sync DOOOOOOONE");
 		if (thisEvent.host.fbID != thisPrati.fbID) {
+			console.log("new comerrrrrrrr");
 			for (var i = 0; i < thisEvent.sortedMovies.length && i < RECOMMANDNUM; i++) {
-				addMovieContainer(thisEvent.sortedMovies[i], i,".front");
+				console.log("new comerrrrrrrr", thisEvent.sortedMovies[i].title);
+				addMovieContainer(thisEvent.sortedMovies[i], i, ".front");
 			}
 		}
 		getMovies(thisPrati.fbID);
