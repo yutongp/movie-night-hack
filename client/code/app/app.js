@@ -389,6 +389,7 @@ function sortVotingList()
         var compA = parseInt($(a).find('span1').text());
         var compB = parseInt($(b).find('span1').text());
         console.log(compA +" "+compB);
+        if(compA==compB) return 0;
         if(compA>compB) 
         {return -1;
         }else return 1;
