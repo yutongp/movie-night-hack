@@ -448,7 +448,7 @@ function sortVotingList()
 
 function updateComrecoMovies () {
 	//talk to server
-	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies, thisEventID.movieList);
+	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies, thisEvent.movieList);
 }
 
 function addSelectedMoviesNewComer(selectedMovies)
