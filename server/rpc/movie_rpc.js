@@ -172,6 +172,9 @@ exports.actions = function(req, res, ss) {
 				console.log(listm);
 			for (var i = 0; i < listm.length; i++) {
 
+				if (listm[i] === undefined) {
+					continue;
+				}
 				// setup e-mail data with unicode symbols
 				var mailOptions = {
 					from: "Amazon Movie Socials <movie.night.hackday@gmail.com>", // sender address

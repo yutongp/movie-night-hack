@@ -15,6 +15,11 @@ html, body {
 	background-color:#333;
 }
 
+ul {
+	list-style-type:none;
+	margin:auto;
+}
+
 button {
 	font-family: "FontAwesome";
 }
@@ -374,6 +379,54 @@ button {
 .friend-avatar { width: 60px; height: 60px;}
 .ui-autocomplete > li { width: 50px; height: 70px; }
 
+.list-title {
+	font-size: 2em;
+	padding: 5px;
+	padding-left: 25px;
+	font-weight: bold;
+	color: #ddd;
+	background-color:#aaa;
+	   box-shadow: 0 8px 6px -6px black;
+}
+
+
+.blue-button {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00799e), color-stop(1,
+	#00799e) );
+	background:-moz-linear-gradient( center top, #00799e 5%, #00799e 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00799e',
+	endColorstr='#00799e');
+	background-color:#00799e;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:2px solid #02add3;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:normal;
+	padding:5px 25px;
+	text-decoration:none;
+}.blue-button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00799e), color-stop(1,
+	#00799e) );
+	background:-moz-linear-gradient( center top, #00799e 5%, #00799e 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00799e',
+	endColorstr='#00799e');
+	background-color:#00799e;
+}.blue-button:active {
+	position:relative;
+	top:1px;
+}
+
+.btn-group {
+	margin: auto;
+	position: absolute;
+	top: 3%;
+	left: 25%;
+
+}
 
 /* #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
 #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }

@@ -250,7 +250,7 @@ function updateMoviesC(movieList) {
 
 	for (var i = 0; i < thisEvent.movieList.length; i++) {
 		var movie = new Movie();
-		var data = movieList[i];
+		var data = thisEvent.movieList[i];
 		movie.movieID = data.alternate_ids.imdb;
 		movie.title = data.title;
 		movie.description = data.plot;
@@ -264,6 +264,7 @@ function updateMoviesC(movieList) {
 		thisEvent.sortedMovies.push(movie);
 	}
 	
+	console.log("current result length: " + thisEvent.movieList.length);
 	updateComrecoMovies();
 }
 
@@ -337,13 +338,39 @@ var OffScreenNav = {
 	}
 };
 
+function playTrailer(name) {
+	var url = 'http://gdata.youtube.com/feeds/api/videos?q='+name+'-trailer&start-index=1&max-results=1&v=2&alt=json&hd';
+	$.get(url, function (response) {
+		var link = response.feed.entry[0].media$group.media$content[0].url;
+		console.log(link);
+		window.open(link, '_blank','height=600,width=980,top=300,left=430,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+	}, "json");
+}
+
+function postFeed() {
+	var feed = {
+		link : 'yutong.me',
+		description : 'Amazon Movie Socials will recommend movies for movie night participants, and they can vote a favorite movie to watch',
+		message: 'I have just created my own movie night. Come to join and vote, my friends!',
+		name: "Amazon Movie Socials", 
+		picture: 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash4/276925_177084509094567_2073532307_n.jpg',
+			caption: 'yutong.me'
+	};
+
+	FB.api('/me/feed', 'post', feed, function(resp) {
+		console.log("post id:" + resp.id);
+	});
+}
 
 function appendPanel(ind) {
-	//TODO change i back to 0
 	$(".movie-container").append(ss.tmpl['panel'].render({panel_index: ind}));
 
 	$(".panel-"+ind).find(".panel-vote").bind("click", function() {
 		voteOnComrecoMovies(this);
+	});
+	$(".panel-"+ind).find(".panel-trailer").bind("click", function() {
+		console.log("dsdsd");
+		playTrailer($(this).attr("movie-title"));
 	});
 }
 
@@ -368,6 +395,7 @@ function addMovieContainer(movie, index, side) {
 	$(".panel.panel-"+ index).find(side).find(".movie-image2").html('<img src=' + movie.imgurl + ' >');
 	addRate($(".panel.panel-"+ index).find(side).find(".rating"), movie.rate);
 	$(".panel.panel-"+ index).find(".panel-vote").attr("movie-id", movie.movieID);
+	$(".panel.panel-"+ index).find(".panel-trailer").attr("movie-title", movie.title);
 	$(".panel.panel-"+ index).find(".panel-vote").attr("panel-index", index);
 	$(".panel.panel-"+ index).find(".panel-title").html('<h4>' + movie.title +'</h4>');
 	$(".panel.panel-"+ index).find(".panel-pg-rate").html(movie.pgRate + " - " + movie.genre);
@@ -383,8 +411,6 @@ function voteOnComrecoMovies(selecter) {
 	console.log("this parti vote on", index);
 	if (thisEvent.comrecoMovies[mID] != undefined) {
 		var votedmovie = thisEvent.comrecoMovies[mID];
-		//TODO add vote in callback NOT HERE
-		//votedmovie.vote++;
 	} else {
 		for (var key in thisEvent.comrecoMovies) {
 			console.log(key);
@@ -398,7 +424,6 @@ function voteOnComrecoMovies(selecter) {
 }
 
 function addVoteOnMovie(movie){
-	//TODO add vote change order ...
 	var value = movie.vote;
 	var id = movie.movieID;
 	thisEvent.selectedMovies[id].vote = movie.vote;
@@ -459,7 +484,6 @@ function addSelectedMoviesNewComer(selectedMovies)
 }
 
 function addtoSelectedMlist(movie) {
-	//TODO check dup title on the list
 		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().appendTo(".voting").show("slide", {direction:"right"},"fast");
     bind_events();
 	addVoteOnMovie(movie);
@@ -519,7 +543,6 @@ function facebookInit() {
 				joinMovieEvent();
 				//getMovies(100006228727252);
 				//if ( == true) {
-				//TODO only showFriends for the host
 				//}
 			});
 		}
@@ -607,16 +630,17 @@ $(document).ready(function(){
             }
         }
 		for(var i=0;i<invited_friends_ids.length;i++)
-	    {
-		    get_user_name(invited_friends_ids[i], function(username){
-			    invited_friends_names.push(username);
-			    if(invited_friends_ids.length == invited_friends_names.length) {
-				    console.log(invited_friends_names);
-				    ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_names);
-			    }
+	{
+		get_user_name(invited_friends_ids[i], function(username){
+			invited_friends_names.push(username);
+			if(invited_friends_ids.length == invited_friends_names.length) {
+				console.log(invited_friends_names);
+				postFeed();
+				ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_names);
+			}
 
-		    });
-	    }   
+		});
+	}
 	});
 
 	$( "#sortable" ).sortable();
@@ -677,11 +701,9 @@ $(document).ready(function(){
 
 	ss.event.on('partiVote', function (movie){
 		if (thisEvent.addSelectedMovies(movie)) {
-			//TODO not on list, add to list;
 			addtoSelectedMlist(movie);
 		} else {
 			addVoteOnMovie(movie);
-			//TODO on list, add on vote number;
 		}
 	});
 
@@ -743,6 +765,9 @@ function joinMovieEvent() {
 		thisEvent.sortedMovies = serverEvent.sortedMovies;
 		thisEvent.selectedMovies = serverEvent.selectedMovies;
 		thisEvent.movieList = serverEvent.movieList;
+		if (thisEvent.movieList === undefined) {
+			thisEvent.movieList = new Array();
+		}
 		thisEvent.host = serverEvent.host;
 
 
@@ -773,6 +798,5 @@ function joinMovieEvent() {
 			}
 		}
 		showFriendsList();
-		//TODO show movie exist
 	});
 }
