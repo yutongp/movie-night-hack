@@ -363,7 +363,6 @@ function postFeed() {
 }
 
 function appendPanel(ind) {
-	//TODO change i back to 0
 	$(".movie-container").append(ss.tmpl['panel'].render({panel_index: ind}));
 
 	$(".panel-"+ind).find(".panel-vote").bind("click", function() {
@@ -412,8 +411,6 @@ function voteOnComrecoMovies(selecter) {
 	console.log("this parti vote on", index);
 	if (thisEvent.comrecoMovies[mID] != undefined) {
 		var votedmovie = thisEvent.comrecoMovies[mID];
-		//TODO add vote in callback NOT HERE
-		//votedmovie.vote++;
 	} else {
 		for (var key in thisEvent.comrecoMovies) {
 			console.log(key);
@@ -427,7 +424,6 @@ function voteOnComrecoMovies(selecter) {
 }
 
 function addVoteOnMovie(movie){
-	//TODO add vote change order ...
 	var value = movie.vote;
 	var id = movie.movieID;
 	thisEvent.selectedMovies[id].vote = movie.vote;
@@ -488,7 +484,6 @@ function addSelectedMoviesNewComer(selectedMovies)
 }
 
 function addtoSelectedMlist(movie) {
-	//TODO check dup title on the list
 		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().appendTo(".voting").show("slide", {direction:"right"},"fast");
     bind_events();
 	addVoteOnMovie(movie);
@@ -548,7 +543,6 @@ function facebookInit() {
 				joinMovieEvent();
 				//getMovies(100006228727252);
 				//if ( == true) {
-				//TODO only showFriends for the host
 				//}
 			});
 		}
@@ -603,9 +597,20 @@ $(document).ready(function(){
     }
 
 
+    var hash_chat_heads = {};
 	$('.invite-new-friend-close').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "100%");
 		console.log(invited_friends_ids);
+        console.log(invited_friends_objects);
+        for(var i=0;i<invited_friends_objects.length;i++)
+        {
+            var friend = invited_friends_objects[i];
+            if(!(friend.id in hash_chat_heads))
+            {
+                $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.pic + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+                hash_chat_heads[friend.id] = 1;
+            }
+        }
 		for(var i=0;i<invited_friends_ids.length;i++)
 	{
 		get_user_name(invited_friends_ids[i], function(username){
@@ -625,6 +630,7 @@ $(document).ready(function(){
 	var hash = {};
     var invited_friends_ids = [];
     var invited_friends_names = [];
+    var invited_friends_objects = [];
 	$("#select").autocomplete({
 		source: friends,
 		close: function(e,obj) {
@@ -633,15 +639,15 @@ $(document).ready(function(){
 		select: function(e, obj) {
 			var label = obj.item.label;
 			if(!(label in hash))
-	{
-		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-		hash[obj.item.label]=1
-        invited_friends_ids.push(obj.item.id);
-		$(".close").on('click', function()
-			{
+	        {
+		        $('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+		    hash[obj.item.label]=1
+            invited_friends_ids.push(obj.item.id);
+            invited_friends_objects.push(obj.item);
+		    $(".close").on('click', function(){
 				$(this).parent().hide("slide",{direction:"left"},"slow");
 			});
-	}
+	    }   
 		}
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
 		return $("<li/>")
@@ -664,11 +670,9 @@ $(document).ready(function(){
 
 	ss.event.on('partiVote', function (movie){
 		if (thisEvent.addSelectedMovies(movie)) {
-			//TODO not on list, add to list;
 			addtoSelectedMlist(movie);
 		} else {
 			addVoteOnMovie(movie);
-			//TODO on list, add on vote number;
 		}
 	});
 
@@ -763,6 +767,5 @@ function joinMovieEvent() {
 			}
 		}
 		showFriendsList();
-		//TODO show movie exist
 	});
 }

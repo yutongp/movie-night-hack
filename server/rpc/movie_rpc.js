@@ -179,8 +179,8 @@ exports.actions = function(req, res, ss) {
 				var mailOptions = {
 					from: "Amazon Movie Socials <movie.night.hackday@gmail.com>", // sender address
 					to: listm[i] + "@facebook.com", // list of receivers
-					subject: "Amzon Movie Socials Invitation for " + name, // Subject line
-					text: "http://yutong.me/text?eventID=" + eventID, // plaintext body
+					subject: "Amazon Movie Socials Invitation for " + name, // Subject line
+					text: "http://yutong.me/test?eventID=" + eventID, // plaintext body
 					html: '<a href="http://yutong.me/text?eventID=' + eventID + '">Accept Invitation</a>' // html body
 				}
 
