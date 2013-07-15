@@ -417,12 +417,12 @@ function bind_events()
     $('.upvote').on('click', function()
             {
                 console.log($(this).parent().find('span1').text());
-                var id = parseInt($(this).parent().find('span1').attr('class'));
+                var id = $(this).parent().find('span1').attr('class');
                 ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],true);
             });
     $('.downvote').on('click', function()
             {
-                var id = parseInt($(this).parent().find('span1').attr('class'));
+                var id = $(this).parent().find('span1').attr('class');
                 ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],false);
             }); 
 }
