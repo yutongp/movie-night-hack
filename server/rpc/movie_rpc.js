@@ -18,6 +18,11 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 		if (this.participates[parti.fbID] == undefined) {
 			this.participates[parti.fbID] = new Participate();
 			this.participates[parti.fbID].state = "panding";
+            this.participates[parti.fbID].name = parti.name;
+            this.participates[parti.fbID].photourl = parti.photourl;
+            this.participates[parti.fbID].usrname = parti.usrname;
+            this.participates[parti.fbID].fbID = parti.fbID;
+
 			if (parti.isHost) {
 				this.host = parti;
 			}

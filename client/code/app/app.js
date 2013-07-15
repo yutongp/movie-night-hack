@@ -18,10 +18,26 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	this.addParticipate = function (parti) {
 		if (this.participates[parti.fbID] == undefined) {
 			this.participates[parti.fbID] = new Participate();
+			this.participates[parti.fbID].state = "panding";
+            this.participates[parti.fbID].name = parti.name;
+            this.participates[parti.fbID].photourl = parti.photourl;
+            this.participates[parti.fbID].usrname = parti.usrname;
+            this.participates[parti.fbID].fbID = parti.fbID;
+
+			if (parti.isHost) {
+				this.host = parti;
+			}
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	this.partiOnline = function (parti) {
+		if (this.participates[parti.fbID] == undefined) {
+			this.addParticipate(parti);
+		}
+		this.participates[parti.fbID].state = "online";
 	}
 
 	this.addComrecoMovies = function (movie) {
@@ -610,7 +626,7 @@ $(document).ready(function(){
 	function get_user_name(uid, callback) {
 		FB.api("/" + uid, function (response) {
 			console.log(response.username);
-			callback(response.username);
+			callback(response.username, uid);
 		});
 	}
 
@@ -621,6 +637,15 @@ $(document).ready(function(){
 		$("#sortable").empty();
 		$("#offscreen-addfriend").css("top", "100%");
 	});
+
+    function append_username(id, username)
+    {
+        for(var i=0;i<invited_friends_objects.length;i++)
+        {
+            if(invited_friends_objects[i].id = id)
+                invited_friends_objects[i]['usrname'] = username;
+        }
+    }
 	$('.invite-new-friend-close').bind("click", function(){
 		$("#sortable").empty();
 		$("#offscreen-addfriend").css("top", "100%");
@@ -631,18 +656,20 @@ $(document).ready(function(){
 		var friend = invited_friends_objects[i];
 		if(!(friend.id in hash_chat_heads))
 	{
-		$('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.pic + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+		/*$('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.photo + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");*/
 		hash_chat_heads[friend.id] = 1;
 	}
 	}
 	for(var i=0;i<invited_friends_ids.length;i++)
 	{
-		get_user_name(invited_friends_ids[i], function(username){
+		get_user_name(invited_friends_ids[i], function(username, id){
 			invited_friends_names.push(username);
+            append_username(id, username);
 			if(invited_friends_ids.length == invited_friends_names.length) {
 				console.log(invited_friends_names);
 				postFeed();
-				ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_names);
+                console.log(invited_friends_objects);
+				ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_objects);
 			}
 
 		});
@@ -760,6 +787,14 @@ function joinMovieEvent() {
 			}
             addSelectedMoviesNewComer(thisEvent.selectedMovies);
 			//TODO update friend;
+
+            for(var key in thisEvent.participates)
+            {
+                var friend = thisEvent.participates[key];
+                $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.photourl + '/>' + friend.name +
+             '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+            }
+
 		}
 
 		$(window).bind('beforeunload', function(){
@@ -769,7 +804,7 @@ function joinMovieEvent() {
 		ss.event.on('newPartiOnline', function (parti) {
 			if (parti.fbID === thisPrati.fbID) {
 				return;
-			}
+			}n
 			if (thisEvent.addParticipate(parti)) {
 				//TODO accpeted change status
 			} else {
@@ -796,7 +831,15 @@ function joinMovieEvent() {
 		});
 
 		ss.event.on('updateFriendList', function(newFriendList){
-			//TODO update friend;
+           $("#final_selected_list").empty();
+            console.log(newFriendList);
+		  for(var key in newFriendList)
+            {
+                var friend = newFriendList[key];
+                $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.photourl + '/>' + friend.name +
+             '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+            }
+	
 		});
 
 		getMovies(thisPrati.fbID);
@@ -810,7 +853,7 @@ function joinMovieEvent() {
 			var data = response.data;
 			count = data.length;
 			for (var i = 0; i < data.length; i++) {
-				var obj  = {'id':data[i].id, 'label':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
+				var obj  = {'id':data[i].id,'fbID':data[i].id, 'label':data[i].name,'name':data[i].name, 'photourl':'http://graph.facebook.com/' + data[i].id + '/picture', 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
 				friends.push(obj);
 			}
 		}
