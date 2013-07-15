@@ -615,6 +615,11 @@ $(document).ready(function(){
 
 
     var hash_chat_heads = {};
+    $('.invite-new-friend-close-cancel').bind('click', function() {
+        $(".close").click();
+        $("#sortable").empty();
+        $("#offscreen-addfriend").css("top", "100%");
+    });
 	$('.invite-new-friend-close').bind("click", function(){
         $("#sortable").empty();
 		$("#offscreen-addfriend").css("top", "100%");
