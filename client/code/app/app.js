@@ -501,7 +501,9 @@ function addSelectedMoviesNewComer(selectedMovies)
 }
 
 function addtoSelectedMlist(movie) {
-		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().appendTo(".voting").show("slide", {direction:"right"},"fast");
+		/*$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().appendTo(".voting").show("slide", {direction:"right"},"fast");*/
+   $('<li class="ui-state-default" ><div class="ui-state-inner"> <a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><span1 class="'+movie.movieID+'">1</span1><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a></div><img class="movie-avatar friend-avatar" src='+ movie.imgurl+'><div style="width: 145px;float: left;"><button class="blue-button">1-Click Buy</button></div></li>').hide().appendTo(".voting").show("slide", {direction:"right"}, "fast");
+
     bind_events();
 	addVoteOnMovie(movie);
 	console.log("add", movie.title, "to selected Movie list");
