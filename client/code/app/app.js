@@ -774,12 +774,8 @@ function joinMovieEvent() {
 		//thisEvent.addComrecoMovies(movie8);
 
 
-<<<<<<< Updated upstream
-
-
-=======
         
-		for (var i = 0; i < RECOMMANDNUM; i++) {
+		/*for (var i = 0; i < RECOMMANDNUM; i++) {
 			addMovieContainer(aM, i, ".front");
 			addMovieContainer(aM, i, ".back");
 		}
@@ -867,7 +863,6 @@ function joinMovieEvent() {
         movie8.description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
         addMovieContainer(movie8,6,".front");
         addMovieContainer(movie8,6,".back");
-        thisEvent.addComrecoMovies(movie8);
->>>>>>> Stashed changes
+        thisEvent.addComrecoMovies(movie8); */
 	});
 }
