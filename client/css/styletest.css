@@ -179,7 +179,7 @@ button {
 	top: 100%;
 	position: absolute;
 	z-index: 3;
-	background-color: rgba(255, 255, 255, .4);
+	background-color: rgba(25, 25, 20, 1);
 	-webkit-transition: top 1s;
 	transition: top 1s;
 }
