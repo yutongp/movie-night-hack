@@ -53,6 +53,7 @@ button {
 	margin-left:auto;
 	margin-right:auto;
 	float: left;
+	padding-left: 55px;
 }
 
 
@@ -93,6 +94,9 @@ button {
 
 .voting {
 	width: 20em;
+}
+.voting > li {
+	height: 90px;
 }
 
 #title-bar{
@@ -179,9 +183,10 @@ button {
 	top: 100%;
 	position: absolute;
 	z-index: 3;
-	background-color: rgba(25, 25, 20, 1);
+	background-color: rgba(255, 255, 255, 1);
 	-webkit-transition: top 1s;
 	transition: top 1s;
+   box-shadow: 0 8px 6px 6px black;
 }
 
 .offscreen-addfriend.offscreen-rises {
