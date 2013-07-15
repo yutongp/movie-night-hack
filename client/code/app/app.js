@@ -363,24 +363,45 @@ function addVoteOnMovie(movie){
 	{
 		$("span1."+id).text(0);
 	}
+    sortVotingList();
+}
+
+function bind_events()
+{
+    $('.upvote').on('click', function()
+            {
+                console.log($(this).parent().find('span1').text());
+                var id = parseInt($(this).parent().find('span1').attr('class'));
+                ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],true);
+            });
+    $('.downvote').on('click', function()
+            {
+                var id = parseInt($(this).parent().find('span1').attr('class'));
+                ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],false);
+            }); 
+}
+
+function sortVotingList()
+{
+    console.log("sort votes");
+    var mylist = $(".voting li");
+    mylist.sort(function(a,b){
+        var compA = parseInt($(a).find('span1').text());
+        var compB = parseInt($(b).find('span1').text());
+        console.log(compA +" "+compB);
+        if(compA>compB) 
+        {return -1;
+        }else return 1;
+    });
+    $(".voting").empty().html(mylist);
+    bind_events();
 }
 
 
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
-		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().prependTo(".voting").show("slide", {direction:"left"},"fast");
-	$('.upvote').on('click', function()
-			{
-				console.log($(this).parent().find('span1').text());
-				var id = parseInt($(this).parent().find('span1').attr('class'));
-				ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],true);
-
-			});
-	$('.downvote').on('click', function()
-			{
-				var id = parseInt($(this).parent().find('span1').attr('class'));
-				ss.rpc("movie_rpc.thisPartiVote", thisEventID, thisEvent.selectedMovies[id],false);
-			});
+		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().prependTo(".voting").show("slide", {direction:"right"},"fast");
+    bind_events();
 	addVoteOnMovie(movie);
 	console.log("add", movie.title, "to selected Movie list");
 }
@@ -531,10 +552,25 @@ function joinMovieEvent() {
 		aM.genre = 'action';
 		aM.pgRate = "PG-13";
 		aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
+
+        
 		for (var i = 0; i < RECOMMANDNUM; i++) {
 			addMovieContainer(aM, i, ".front");
 			addMovieContainer(aM, i, ".back");
 		}
 		thisEvent.addComrecoMovies(aM);
+        
+        var movie2 = new Movie();
+        movie2.title = "Dark Knight Rises";
+        movie2.movieID = 111;
+        movie2.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg'
+        movie2.rate = 9.2;
+        movie2.genre = 'action,crime,thriller';
+        movie2.pgRate = "PG-13";
+        movie2.description = "Eight years on, a new evil rises from where the Batman and Commissioner Gordon tried to bury it, causing the Batman to resurface and fight to protect Gotham City... the very city which brands him an enemy."
+        addMovieContainer(movie2,2,".front");
+        addMovieContainer(movie2,2,".back");
+        thisEvent.addComrecoMovies(movie2);
+
 	});
 }
