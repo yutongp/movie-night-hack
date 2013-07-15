@@ -96,7 +96,7 @@ button {
 	width: 20em;
 }
 .voting > li {
-	height: 90px;
+	height: 102px;
 }
 
 #title-bar{
@@ -419,6 +419,7 @@ button {
 	font-weight:normal;
 	padding:5px 25px;
 	text-decoration:none;
+	margin: 24px;
 }.blue-button:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00799e), color-stop(1,
 	#00799e) );
@@ -438,6 +439,26 @@ button {
 	left: 25%;
 
 }
+
+.ui-state-inner {
+	float: left;
+	width: 40px;
+	margin-right: 1px;
+}
+
+.ui-state-inner > span1 {
+	display: block;
+	font-size: 20px;
+	padding: 11px;
+}
+
+.movie-avatar {
+	float: left;
+	height: 100px;
+	width: 90px;
+}
+
+
 
 /* #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
 #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
