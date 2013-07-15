@@ -565,14 +565,33 @@ $(document).ready(function(){
 	$('.invite-new-friend').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "0%");
 	});
+    
+    function get_user_name(uid, callback) {
+        FB.api("/" + uid, function (response) {
+            console.log(response.username);
+            callback(response.username);
+        });
+    }
+
 
 	$('.invite-new-friend-close').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "100%");
+        console.log(invited_friends_ids);
+        for(var i=0;i<invited_friends_ids.length;i++)
+        {
+            get_user_name(invited_friends_ids[i], function(username){
+                invited_friends_names.push(username);
+                if(invited_friends_ids.length == invited_friends_names.length)
+                    console.log(invited_friends_names);
+            });
+        }
 	});
 
 	$( "#sortable" ).sortable();
 
 	var hash = {};
+    var invited_friends_ids = [];
+    var invited_friends_names = [];
 	$("#select").autocomplete({
 		source: friends,
 		close: function(e,obj) {
@@ -584,6 +603,7 @@ $(document).ready(function(){
 	{
 		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
 		hash[obj.item.label]=1
+        invited_friends_ids.push(obj.item.id);
 		$(".close").on('click', function()
 			{
 				$(this).parent().hide("slide",{direction:"left"},"slow");
