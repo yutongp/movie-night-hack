@@ -492,9 +492,9 @@ function flipPanel(ind, side) {
 function facebookInit() {
 	FB.init({
 		appId: '389973247769015',
-	status: true,
-	cookie: true,
-	xfbml: true
+		status: true,
+		cookie: true,
+		xfbml: true
 	});
 	FB.getLoginStatus(function(response) {
 		if (response.status == "connected") {
@@ -654,6 +654,22 @@ function joinMovieEvent() {
 		thisEvent = new MovieEvent(thisEventID, serverEvent.host, serverEvent.loca, serverEvent.time);
 		//sync event
 
+		thisEvent.participates = serverEvent.participates;
+		thisEvent.comrecoMovies = serverEvent.comrecoMovies;
+		thisEvent.sortedMovies = serverEvent.sortedMovies;
+		thisEvent.selectdMovies = serverEvent.selectedMovies;
+		thisEvent.host = serverEvent.host;
+
+		console.log("sync DOOOOOOONE", serverEvent.host.name);
+		if (thisEvent.host.fbID != thisPrati.fbID) {
+			console.log("new comerrrrrrrr");
+			for (var i = 0; i < thisEvent.sortedMovies.length && i < RECOMMANDNUM; i++) {
+				console.log("new comerrrrrrrr", thisEvent.sortedMovies[i].title);
+				appendPanel(currentNUM);
+				addMovieContainer(thisEvent.sortedMovies[i], i, ".front");
+				currentNUM++;
+			}
+		}
 		getMovies(thisPrati.fbID);
 		//TODO add callback for showFriendsList
 		function showFriendsList() {
