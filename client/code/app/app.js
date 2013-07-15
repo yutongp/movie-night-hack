@@ -535,12 +535,29 @@ $(document).ready(function(){
 		e.preventDefault();
 	});
 
+    $(".btn").on('click', function(e) {
+       var genre = $(this).attr('value');
+       $('.panel').each(function(){
+           var re = new RegExp(genre, 'i')
+           //console.log("title "+$(this).find('.panel-title').text());
+           //console.log("description: "+$(this).find('.panel-description').text());
+           if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
+               $(this).find('.panel-description').text().match(re)){
+           console.log($(this).parent().html());
+           $(this).fadeIn("medium");
+           }else{
+           $(this).fadeOut("medium");
+           };
+
+        });
+
+    });
+
 	$(".filter").keyup(function(e) {
 		$('.panel').each(function(){
 			var re = new RegExp($('.filter').val(), 'i')
 			//console.log("title "+$(this).find('.panel-title').text());
 			//console.log("description: "+$(this).find('.panel-description').text());
-
                 if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
                     $(this).find('.panel-description').text().match(re)){
                 console.log($(this).parent().html());
