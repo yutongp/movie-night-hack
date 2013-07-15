@@ -5,6 +5,7 @@ var EMPTY_STARCODE = "&#xF006;";
 var friends_invited = ['100006228727252', '100001503913338'];
 
 function MovieEvent (eventid, eventHost, lo, ti) {
+	this.movieList = new Array();
 	this.participates = {};
 	this.comrecoMovies = {};
 	this.selectedMovies = {};
@@ -226,21 +227,44 @@ function popularMovies(movieA, movieB) {
 
 function updateFrequency(data) {
 	var flag = false;
-	for (var i = 0; i < movieList.length; i++)
+	for (var i = 0; i < thisEvent.movieList.length; i++)
 	{
-		if (movieList[i].title == data.title) {
-			movieList[i].count++;
+		if (thisEvent.movieList[i].title == data.title) {
+			thisEvent.movieList[i].count++;
 			flag = true;
 		}
 	}
 	if (flag == false) {
 		data.count = 1;
-		movieList = movieList.concat(data);
+		thisEvent.movieList = thisEvent.movieList.concat(data);
 	}
 
-	movieList.sort(popularMovies);
+	thisEvent.movieList.sort(popularMovies);
 
-	updateMoviesC(movieList);
+	updateMoviesC(thisEvent.movieList);
+}
+
+function updateMoviesC(movieList) {
+	thisEvent.comrecoMovies = {};
+	thisEvent.sortedMovies = [];
+
+	for (var i = 0; i < thisEvent.movieList.length; i++) {
+		var movie = new Movie();
+		var data = movieList[i];
+		movie.movieID = data.alternate_ids.imdb;
+		movie.title = data.title;
+		movie.description = data.plot;
+		movie.genre = data.genre;
+		movie.imgurl = data.posters.detailed;
+		movie.pgRate = data.rated;
+		movie.rate = data.rating;
+		movie.count = data.count;
+
+		thisEvent.addComrecoMovies(movie);
+		thisEvent.sortedMovies.push(movie);
+	}
+	
+	updateComrecoMovies();
 }
 
 function invite() {
@@ -259,29 +283,6 @@ function invite() {
 	FB.api('/me/feed', 'post', feed, function(resp) {
 		console.log("post id:" + resp.id);
 	});
-}
-
-function updateMoviesC(movieList) {
-	thisEvent.comrecoMovies = {};
-	thisEvent.sortedMovies = [];
-
-	for (var i = 0; i < movieList.length; i++) {
-		var movie = new Movie();
-		var data = movieList[i];
-		movie.movieID = data.alternate_ids.imdb;
-		movie.title = data.title;
-		movie.description = data.plot;
-		movie.genre = data.genre;
-		movie.imgurl = data.posters.detailed;
-		movie.pgRate = data.rated;
-		movie.rate = data.rating;
-		movie.count = data.count;
-
-		thisEvent.addComrecoMovies(movie);
-		thisEvent.sortedMovies.push(movie);
-	}
-	
-	updateComrecoMovies();
 }
 
 function updateParticipate(participate, data) {
