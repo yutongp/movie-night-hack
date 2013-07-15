@@ -100,6 +100,7 @@ exports.actions = function(req, res, ss) {
 			} else {
 				// add event
 				thisEvent = allEvent[eventID];
+				console.log("new comer in", parti.name);
 			}
 
 			if (allEvent[eventID] === undefined) {

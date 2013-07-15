@@ -659,7 +659,7 @@ function joinMovieEvent() {
 		thisEvent.selectdMovies = serverEvent.selectedMovies;
 		thisEvent.host = serverEvent.host;
 
-		console.log("sync DOOOOOOONE");
+		console.log("sync DOOOOOOONE", serverEvent.host.name);
 		if (thisEvent.host.fbID != thisPrati.fbID) {
 			console.log("new comerrrrrrrr");
 			for (var i = 0; i < thisEvent.sortedMovies.length && i < RECOMMANDNUM; i++) {
