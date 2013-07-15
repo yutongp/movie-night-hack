@@ -7,6 +7,7 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
 	this.comrecoMovies = {};
 	this.selectedMovies = {};
+	this.movieList = new Array();
 	this.sortedMovies = new Array();
 	this.loca = lo;
 	this.time = ti;
@@ -141,7 +142,7 @@ exports.actions = function(req, res, ss) {
 			ss.publish.channel(eventID, 'partiVote', thisEvent.selectedMovies[movie.movieID]);
 		},
 
-		updateComrecoMovies: function(eventID, movies, sorted) {
+		updateComrecoMovies: function(eventID, movies, sorted, ml) {
 			var thisEvent = allEvent[eventID];
 			if (thisEvent === undefined) {
 				console.log("!!!!!!! undefined Event", eventID);
@@ -152,6 +153,7 @@ exports.actions = function(req, res, ss) {
 			} else {
 				thisEvent.sortedMovies = sorted;
 				thisEvent.comrecoMovies = movies;
+				thisEvent.movieList = ml;
 				ss.publish.channel(eventID, 'updateMovies', movies, sorted);
 			}
 		}
