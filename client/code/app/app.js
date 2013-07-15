@@ -83,6 +83,7 @@ var thisPrati = new Participate();
 var thisEventID = -1;
 
 var RECOMMANDNUM = 8;
+var currentNUM = 0;
 var friends=[];
 
 ///////////////////////
@@ -128,7 +129,7 @@ return get;
 
 function getMovies(id) {
 	FB.api('/' + id + '/movies', function (response) {
-		for (var i = 0; i < response.data.length; i++) {
+		for (var i = 0; i < response.data.length && i < 5; i++) {
 			getRelatedMovies(response.data[i].name);
 		}
 	});
@@ -218,12 +219,10 @@ function updateFrequency(data) {
 
 	movieList.sort(popularMovies);
 
-	updateMovies(movieList);
-
-	displayResults();
+	updateMoviesC(movieList);
 }
 
-function updateMovies(movieList) {
+function updateMoviesC(movieList) {
 	thisEvent.comrecoMovies = {};
 	thisEvent.sortedMovies = [];
 
@@ -297,11 +296,13 @@ var OffScreenNav = {
 };
 
 
-function appendPanel() {
+function appendPanel(ind) {
 	//TODO change i back to 0
-	for (var i = 0; i < 8; i++) {
-		$(".movie-container").append(ss.tmpl['panel'].render({panel_index: i}));
-	}
+	$(".movie-container").append(ss.tmpl['panel'].render({panel_index: ind}));
+
+	$(".panel-"+ind).find(".panel-vote").bind("click", function() {
+		voteOnComrecoMovies(this);
+	});
 }
 
 
@@ -418,16 +419,38 @@ function addtoSelectedMlist(movie) {
 }
 
 
-function updatePanel() {
-
+function updatePanel(inx) {
+	if(inx < thisEvent.sortedMovies.length && inx < RECOMMANDNUM) {
+		if (currentNUM < RECOMMANDNUM) {
+		//setTimeout
+			console.log(":::::::::",inx,":::::::::");
+			appendPanel(currentNUM);
+			addMovieContainer(thisEvent.sortedMovies[inx], inx,".front");
+			currentNUM++;
+		} else {
+			if ($('.panel-'+inx).hasClass('flip')) {
+				addMovieContainer(thisEvent.sortedMovies[inx], inx,".front");
+				setTimeout(flipPanel(inx, "front"), 300);
+			} else {
+				addMovieContainer(thisEvent.sortedMovies[inx], inx,".back");
+				setTimeout(flipPanel(inx, "back"), 300);
+			}
+		}
+		setTimeout(updatePanel(++inx), 5000);
+	}
 }
 
+function flipPanel(ind, side) {
+	if (side === "back") {
+		$('.panel-' + ind).addClass("flip");
+	} else if (side === "front") {
+		$('.panel-' + ind).removeClass("flip");
+	}
+}
+
+
 $(document).ready(function(){
-	appendPanel();
 //For #rvote
-	$(".panel-vote").bind("click", function() {
-		voteOnComrecoMovies(this);
-	});
 
 	OffScreenNav.init();
 	//$('.panel').toggle(function(){
@@ -436,11 +459,6 @@ $(document).ready(function(){
 		//$(this).removeClass('flip');
 	//});
 
-	$('.panel').hover(function(){
-		$(this).addClass('panel-hover');
-	},function(){
-		$(this).removeClass('panel-hover');
-	});
 
 	$('#invite-new-friend').toggle(function(){
 		$("#offscreen-addfriend").css("top", "0%");
@@ -501,10 +519,11 @@ $(document).ready(function(){
 		thisEvent.comrecoMovies = reco;
 		thisEvent.sortedMovies =sorted;
 		for (key in thisEvent.comrecoMovies) {
-			console.log(thisEvent.comrecoMovies[key].title);
+			console.log("=-=-=-=-",thisEvent.comrecoMovies[key].title);
 		}
-		updatePanel();
+		updatePanel(0);
 	});
+
 
 	//////
 	function facebookInit() {
@@ -519,10 +538,6 @@ $(document).ready(function(){
 				FB.api("/me", function (response) {
 					updateParticipate(thisPrati, response);
 					joinMovieEvent();
-					//getMovies(100006228727252);
-					//if ( == true) {
-					//TODO only showFriends for the host
-					//}
 				});
 			}
 		});

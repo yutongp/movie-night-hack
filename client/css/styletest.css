@@ -250,6 +250,7 @@ button {
   display: inline-block;
   position: relative;
   width: 1.1em;
+  font-size: 1.2em;
 }
 
 .panel-title {
@@ -263,7 +264,13 @@ button {
 .panel-description {
 	height: 95px;
 	overflow: hidden;
+	color: rgba(0,0,0,0.9);
+	text-align: left;
+	padding-left: 5px;
 }
+.panel-pg-rate {
+}
+
 .panel-trailer, .panel-vote {
 	display: block;
 	background-color: rgba(0,0,0,0);
@@ -276,7 +283,7 @@ button {
 	height:30px;
 }
 
-.panel-hover .panel-info {
+.panel:hover .panel-info {
 	top: 20%;
 }
 
@@ -298,7 +305,7 @@ button {
 	-webkit-transition: height 1s;
 	transition: height 1s;
 }
-.panel-hover .movie-image1 {
+.panel:hover .movie-image1 {
 	height: 20%;
 }
 

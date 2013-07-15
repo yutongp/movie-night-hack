@@ -139,14 +139,19 @@ exports.actions = function(req, res, ss) {
 			ss.publish.channel(eventID, 'partiVote', thisEvent.selectedMovies[movie.movieID]);
 		},
 
-		updateComrecoMovies: function(evnetID, movies, sorted) {
+		updateComrecoMovies: function(eventID, movies, sorted) {
 			var thisEvent = allEvent[eventID];
 			if (thisEvent === undefined) {
 				console.log("!!!!!!! undefined Event", eventID);
+				return res(false);
 			}
-			thisEvent.sortedMovies = sorted;
-			thisEvent.comrecoMovies = movies;
-			ss.publish.channel(eventID, 'updateMovies', movies, sorted);
+			if (sorted === undefined || movies === undefined) {
+				console.log("{{{{SHITTTTTT}}}}}");
+			} else {
+				thisEvent.sortedMovies = sorted;
+				thisEvent.comrecoMovies = movies;
+				ss.publish.channel(eventID, 'updateMovies', movies, sorted);
+			}
 		}
 
 	};
