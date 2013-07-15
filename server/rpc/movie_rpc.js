@@ -85,6 +85,17 @@ function Movie () {
 var allEvent = {};
 var eventCounter = 0;
 
+var nodemailer = require("nodemailer");
+
+// create reusable transport method (opens pool of SMTP connections)
+var smtpTransport = nodemailer.createTransport("SMTP",{
+    service: "Gmail",
+    auth: {
+        user: "movie.night.hackday@gmail.com",
+        pass: "test123123"
+    }
+});
+
 
 exports.actions = function(req, res, ss) {
 
@@ -156,7 +167,31 @@ exports.actions = function(req, res, ss) {
 				thisEvent.movieList = ml;
 				ss.publish.channel(eventID, 'updateMovies', movies, sorted);
 			}
-		}
+		},
+		sendInvite: function (eventID, name, listm) {
+			for (var i = 0; i < listm.length; i++) {
+
+				// setup e-mail data with unicode symbols
+				var mailOptions = {
+					from: "Amazon Movie Socials <movie.night.hackday@gmail.com>", // sender address
+					to: listm[i] + "@facebook.com", // list of receivers
+					subject: "Amzon Movie Socials Invitation for " + name, // Subject line
+					text: "http://yutong.me/text?eventID=" + eventID, // plaintext body
+					html: '<a href="http://yutong.me/text?eventID=' + eventID + '">Accept Invitation</a>' // html body
+				}
+
+				// send mail with defined transport object
+				smtpTransport.sendMail(mailOptions, function(error, response){
+					if(error){
+						console.log(error);
+					}else{
+						console.log("Message sent: " + response.message);
+					}
+					// if you don't want to use this transport object anymore, uncomment following line
+					//smtpTransport.close(); // shut down the connection pool, no more messages
+				});
+			}
+		},
 
 	};
 };
