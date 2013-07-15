@@ -414,6 +414,29 @@ function addtoSelectedMlist(movie) {
 	console.log("add", movie.title, "to selected Movie list");
 }
 
+	function facebookInit() {
+		FB.init({
+			appId: '389973247769015',
+			status: true,
+			cookie: true,
+			xfbml: true
+		});
+		FB.getLoginStatus(function(response) {
+			if (response.status == "connected") {
+				FB.api("/me", function (response) {
+					updateParticipate(thisPrati, response);
+					joinMovieEvent();
+					//getMovies(100006228727252);
+					//if ( == true) {
+					//TODO only showFriends for the host
+					//}
+				});
+			}
+		});
+	}
+
+	facebookInit();
+
 $(document).ready(function(){
 
         //instant search functionality
@@ -512,7 +535,7 @@ $(document).ready(function(){
 	});
 
 	//////
-	function facebookInit() {
+/*	function facebookInit() {
 		FB.init({
 			appId: '389973247769015',
 			status: true,
@@ -533,7 +556,7 @@ $(document).ready(function(){
 		});
 	}
 
-	facebookInit();
+	facebookInit();*/
 });
 
 
