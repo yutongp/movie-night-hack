@@ -179,7 +179,7 @@ function calculateFrequency(response)
 }
 
 function getIMDBInfo(data) {
-	if (typeof(data.alternate_ids) != "undefined") {
+	if (typeof(data.alternate_ids.imdb) != "undefined") {
 		var id = data.alternate_ids.imdb;
 		var url = 'http://www.omdbapi.com/?i=tt' + id;
 		//alert('title: ' + data.title + ', id: ' + id);
@@ -451,8 +451,9 @@ function updateComrecoMovies () {
 
 function addSelectedMoviesNewComer(selectedMovies)
 {
-    for(var key in selectedMovies)
-        addtoSelectedMlist(selectedMovies[key]);
+	for(var key in selectedMovies) {
+		addtoSelectedMlist(selectedMovies[key]);
+	}
 }
 
 function addtoSelectedMlist(movie) {
@@ -662,7 +663,7 @@ function joinMovieEvent() {
 		thisEvent.participates = serverEvent.participates;
 		thisEvent.comrecoMovies = serverEvent.comrecoMovies;
 		thisEvent.sortedMovies = serverEvent.sortedMovies;
-		thisEvent.selectdMovies = serverEvent.selectedMovies;
+		thisEvent.selectedMovies = serverEvent.selectedMovies;
 		thisEvent.host = serverEvent.host;
 
 
@@ -675,7 +676,7 @@ function joinMovieEvent() {
 				addMovieContainer(thisEvent.sortedMovies[i], i, ".front");
 				currentNUM++;
 			}
-            addSelectedMoviesNewComer(thisEvent.selectMovies);
+            addSelectedMoviesNewComer(thisEvent.selectedMovies);
 		}
 		getMovies(thisPrati.fbID);
 		//TODO add callback for showFriendsList
