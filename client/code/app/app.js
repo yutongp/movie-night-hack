@@ -449,6 +449,11 @@ function updateComrecoMovies () {
 	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies);
 }
 
+function addSelectedMoviesNewComer(selectedMovies)
+{
+    for(var i=0;i<selectedMovies.length;i++)
+        addtoSelectedMlist(selectedMovies[i]);
+}
 
 function addtoSelectedMlist(movie) {
 	//TODO check dup title on the list
@@ -660,6 +665,7 @@ function joinMovieEvent() {
 		thisEvent.selectdMovies = serverEvent.selectedMovies;
 		thisEvent.host = serverEvent.host;
 
+
 		console.log("sync DOOOOOOONE", serverEvent.host.name);
 		if (thisEvent.host.fbID != thisPrati.fbID) {
 			console.log("new comerrrrrrrr");
@@ -669,6 +675,7 @@ function joinMovieEvent() {
 				addMovieContainer(thisEvent.sortedMovies[i], i, ".front");
 				currentNUM++;
 			}
+            addSelectedMoviesNewComer(thisEvent.selectMovies);
 		}
 		getMovies(thisPrati.fbID);
 		//TODO add callback for showFriendsList
