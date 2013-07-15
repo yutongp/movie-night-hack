@@ -2,6 +2,7 @@
 var HALF_STARCODE = "&#xF123;";
 var FULL_STARCODE = "&#xF005;";
 var EMPTY_STARCODE = "&#xF006;";
+var friends_invited = ['100006228727252', '100001503913338'];
 
 function MovieEvent (eventid, eventHost, lo, ti) {
 	this.participates = {};
@@ -92,6 +93,8 @@ var count;
 var friends_invited = ['100006228727252'];
 var friends;
 var relatedMovies;
+var likes = new Array();
+var indexg = 0;
 /////////////////////////////
 
 ////////////////////
@@ -129,10 +132,25 @@ return get;
 
 function getMovies(id) {
 	FB.api('/' + id + '/movies', function (response) {
-		for (var i = 0; i < response.data.length && i < 5; i++) {
-			getRelatedMovies(response.data[i].name);
-		}
+		//for (var i = 0; i < response.data.length && i < 5; i++) {
+		//getRelatedMovies(response.data[i].name);
+		//}
+	likes = likes.concat(response.data);
+	recommend();
+		/*for (var i = 0; i < response.data.length; i++) {
+		  setTimeout(getRelatedMovies(response.data[i].name), 1000);
+		  }*/
 	});
+}
+
+function recommend()
+{
+	if (indexg < likes.length) {
+		getRelatedMovies(likes[indexg].name);
+		indexg++;
+		setTimeout("recommend()", 2000);
+	}
+	
 }
 
 function getRelatedMovies(name)
@@ -145,9 +163,9 @@ function getRelatedMovies(name)
 			var id = response.movies[0].id;
 			//alert(response.movies[0].title);
 			var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies/'
-		+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
+				+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
 
-	$.get(url, calculateFrequency, "jsonp");
+			$.get(url, calculateFrequency, "jsonp");
 		}
 	}, "jsonp");
 
@@ -161,26 +179,28 @@ function calculateFrequency(response)
 }
 
 function getIMDBInfo(data) {
-	var id = data.alternate_ids.imdb;
-	var url = 'http://www.omdbapi.com/?i=tt' + id;
-	//alert('title: ' + data.title + ', id: ' + id);
+	if (typeof(data.alternate_ids) != "undefined") {
+		var id = data.alternate_ids.imdb;
+		var url = 'http://www.omdbapi.com/?i=tt' + id;
+		//alert('title: ' + data.title + ', id: ' + id);
 
-	$.get(url, function (response) {
-		//alert("Find " + response.Title);
+		$.get(url, function (response) {
+			//alert("Find " + response.Title);
 
-		data.title = response.Title;
-		data.year = response.Year;
-		data.imdb_url = response.imdb_url;
-		data.director = response.Director;
-		data.actors = response.Actors;
-		data.rating = response.imdbRating;
-		data.rated = response.Rated;
-		data.poster = response.Poster;
-		data.genre = response.Genre;
-		data.plot = response.Plot;
+			data.title = response.Title;
+			data.year = response.Year;
+			data.imdb_url = response.imdb_url;
+			data.director = response.Director;
+			data.actors = response.Actors;
+			data.rating = response.imdbRating;
+			data.rated = response.Rated;
+			data.poster = response.Poster;
+			data.genre = response.Genre;
+			data.plot = response.Plot;
 
-		updateFrequency(data);
-	}, "json");
+			updateFrequency(data);
+		}, "json");
+	}
 }
 
 function popularMovies(movieA, movieB) {
@@ -222,6 +242,24 @@ function updateFrequency(data) {
 	updateMoviesC(movieList);
 }
 
+function invite() {
+	var requestURL = "https://www.facebook.com/dialog/apprequests?app_id=389973247769015"
+		+ "&message=I have invited you to my Movie Night!"
+		+ "&redirect_uri=http://127.0.0.1:8080/Hackday/facebook.html&response&"
+		+ "to=" + friends_invited;
+	window.open(requestURL);
+	
+	var feed = {
+			link : 'http://127.0.0.1:8080/facebook.html',
+			description : 'I have created my own movie night just now! Do you want to have a try?', 
+			message: '@Yutong Pei'
+	};
+	
+	FB.api('/me/feed', 'post', feed, function(resp) {
+		console.log("post id:" + resp.id);
+	});
+}
+
 function updateMoviesC(movieList) {
 	thisEvent.comrecoMovies = {};
 	thisEvent.sortedMovies = [];
@@ -233,7 +271,7 @@ function updateMoviesC(movieList) {
 		movie.title = data.title;
 		movie.description = data.plot;
 		movie.genre = data.genre;
-		movie.imgurl = data.poster;
+		movie.imgurl = data.posters.detailed;
 		movie.pgRate = data.rated;
 		movie.rate = data.rating;
 		movie.count = data.count;
@@ -250,6 +288,8 @@ function updateParticipate(participate, data) {
 	participate.fbID = data.id;
 	participate.photourl = 'http://graph.facebook.com/' + data.id + '/picture';
 }
+
+
 
 var OffScreenNav = {
 	nav: $("#offscreen-nav"),
@@ -536,6 +576,7 @@ $(document).ready(function(){
 		FB.getLoginStatus(function(response) {
 			if (response.status == "connected") {
 				FB.api("/me", function (response) {
+					
 					updateParticipate(thisPrati, response);
 					joinMovieEvent();
 				});
