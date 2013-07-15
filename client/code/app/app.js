@@ -174,7 +174,7 @@ function recommend()
 
 function getRelatedMovies(name)
 {
-	var urlId = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=jm483swc8eux9rgtcn7hjndz&q='
+	var urlId = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=v6mngmk6srv6uvukn8jkz2sy&q='
 		+ name + '&page_limit=1';
 
 	$.get(urlId, function (response) {
@@ -182,7 +182,7 @@ function getRelatedMovies(name)
 			var id = response.movies[0].id;
 			//alert(response.movies[0].title);
 			var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies/'
-				+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
+				+ id + '/similar.json?apikey=v6mngmk6srv6uvukn8jkz2sy';
 
 			$.get(url, calculateFrequency, "jsonp");
 		}
