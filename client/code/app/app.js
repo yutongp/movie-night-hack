@@ -631,21 +631,22 @@ $(document).ready(function(){
 			$("#select").val("");
 		},
 		select: function(e, obj) {
-			var label = obj.item.label;
-			if(!(label in hash))
+			var pic = obj.item.pic;
+			if(!(pic in hash))
 	        {
-		        $('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-		    hash[obj.item.label]=1
+		        $('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+		    hash[pic]=1
             invited_friends_ids.push(obj.item.id);
             invited_friends_objects.push(obj.item);
 		    $(".close").on('click', function(){
                 var pic = $(this).parent().find('img').attr('src');
                 var temp = [];
+                delete hash[pic];
                 for(var i=0;i<invited_friends_objects.length;i++)
                 {
                         console.log(invited_friends_objects[i].pic);
                         console.log(pic);
-                        if(invited_friends_objects[i].pic+"/"!=pic)
+                        if(invited_friends_objects[i].pic!=pic)
                             temp.push(invited_friends_objects[i]);
                 }
                 console.log("invited " +invited_friends_objects);
