@@ -337,6 +337,29 @@ var OffScreenNav = {
 	}
 };
 
+function playTrailer(name) {
+	var url = 'http://gdata.youtube.com/feeds/api/videos?q='+name+'-trailer&start-index=1&max-results=1&v=2&alt=json&hd';
+	$.get(url, function (response) {
+		var link = response.feed.entry[0].media$group.media$content[0].url;
+		console.log(link);
+		window.open(link, "_blank");
+	}, "json");
+}
+
+function postFeed() {
+	var feed = {
+		link : 'yutong.me',
+		description : 'Amazon Movie Socials will recommend movies for movie night participants, and they can vote a favorite movie to watch',
+		message: 'I have just created my own movie night. Come to join and vote, my friends!',
+		name: "Amazon Movie Socials", 
+		picture: 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash4/276925_177084509094567_2073532307_n.jpg',
+			caption: 'yutong.me'
+	};
+
+	FB.api('/me/feed', 'post', feed, function(resp) {
+		console.log("post id:" + resp.id);
+	});
+}
 
 function appendPanel(ind) {
 	//TODO change i back to 0
@@ -344,6 +367,10 @@ function appendPanel(ind) {
 
 	$(".panel-"+ind).find(".panel-vote").bind("click", function() {
 		voteOnComrecoMovies(this);
+	});
+	$(".panel-"+ind).find(".panel-trailer").bind("click", function() {
+		console.log("dsdsd");
+		playTrailer($(this).attr("movie-title"));
 	});
 }
 
@@ -368,6 +395,7 @@ function addMovieContainer(movie, index, side) {
 	$(".panel.panel-"+ index).find(side).find(".movie-image2").html('<img src=' + movie.imgurl + ' >');
 	addRate($(".panel.panel-"+ index).find(side).find(".rating"), movie.rate);
 	$(".panel.panel-"+ index).find(".panel-vote").attr("movie-id", movie.movieID);
+	$(".panel.panel-"+ index).find(".panel-trailer").attr("movie-title", movie.title);
 	$(".panel.panel-"+ index).find(".panel-vote").attr("panel-index", index);
 	$(".panel.panel-"+ index).find(".panel-title").html('<h4>' + movie.title +'</h4>');
 	$(".panel.panel-"+ index).find(".panel-pg-rate").html(movie.pgRate + " - " + movie.genre);
@@ -583,6 +611,7 @@ $(document).ready(function(){
 			invited_friends_names.push(username);
 			if(invited_friends_ids.length == invited_friends_names.length) {
 				console.log(invited_friends_names);
+				postFeed();
 				ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_names);
 			}
 
