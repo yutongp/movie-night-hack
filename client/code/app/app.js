@@ -5,10 +5,10 @@ var EMPTY_STARCODE = "&#xF006;";
 var friends_invited = ['100006228727252', '100001503913338'];
 
 function MovieEvent (eventid, eventHost, lo, ti) {
-	this.movieList = new Array();
 	this.participates = {};
 	this.comrecoMovies = {};
 	this.selectedMovies = {};
+	this.movieList = new Array();
 	this.sortedMovies = new Array();
 	this.loca = lo;
 	this.time = ti;
@@ -49,6 +49,7 @@ function Participate () {
 	this.photourl = "";
 	this.recommandMovies = {};
 	this.friendList = {};
+	this.state = "";
 	this.isHost = false;
 	this.isOnline = false;
 
@@ -447,7 +448,7 @@ function sortVotingList()
 
 function updateComrecoMovies () {
 	//talk to server
-	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies);
+	ss.rpc('movie_rpc.updateComrecoMovies', thisEventID, thisEvent.comrecoMovies, thisEvent.sortedMovies, thisEventID.movieList);
 }
 
 function addSelectedMoviesNewComer(selectedMovies)
@@ -561,9 +562,11 @@ $(document).ready(function(){
 	//});
 
 
-	$('#invite-new-friend').toggle(function(){
+	$('.invite-new-friend').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "0%");
-	},function(){
+	});
+
+	$('.invite-new-friend-close').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "100%");
 	});
 
@@ -673,6 +676,7 @@ function joinMovieEvent() {
 		thisEvent.comrecoMovies = serverEvent.comrecoMovies;
 		thisEvent.sortedMovies = serverEvent.sortedMovies;
 		thisEvent.selectedMovies = serverEvent.selectedMovies;
+		thisEvent.movieList = serverEvent.movieList;
 		thisEvent.host = serverEvent.host;
 
 
