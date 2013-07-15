@@ -46,6 +46,7 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 function Participate () {
 	this.name = "";
 	this.fbID = "";
+	this.usrname = "";
 	this.photourl = "";
 	this.recommandMovies = {};
 	this.friendList = {};
@@ -558,78 +559,78 @@ $(document).ready(function(){
 		e.preventDefault();
 	});
 
-    $(".btn").on('click', function(e) {
-       var genre = $(this).attr('value');
-       $('.panel').each(function(){
-           var re = new RegExp(genre, 'i')
-           //console.log("title "+$(this).find('.panel-title').text());
-           //console.log("description: "+$(this).find('.panel-description').text());
-           if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
-               $(this).find('.panel-description').text().match(re)){
-           console.log($(this).parent().html());
-           $(this).fadeIn("medium");
-           }else{
-           $(this).fadeOut("medium");
-           };
+	$(".btn").on('click', function(e) {
+		var genre = $(this).attr('value');
+		$('.panel').each(function(){
+			var re = new RegExp(genre, 'i')
+			//console.log("title "+$(this).find('.panel-title').text());
+			//console.log("description: "+$(this).find('.panel-description').text());
+			if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
+				$(this).find('.panel-description').text().match(re)){
+					console.log($(this).parent().html());
+					$(this).fadeIn("medium");
+				}else{
+					$(this).fadeOut("medium");
+				};
 
-        });
+		});
 
-    });
+	});
 
 	$(".filter").keyup(function(e) {
 		$('.panel').each(function(){
 			var re = new RegExp($('.filter').val(), 'i')
 			//console.log("title "+$(this).find('.panel-title').text());
 			//console.log("description: "+$(this).find('.panel-description').text());
-                if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
-                    $(this).find('.panel-description').text().match(re)){
-                console.log($(this).parent().html());
-                $(this).fadeIn("medium");
-                }else{
-                $(this).fadeOut("medium");
-                };
+			if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
+				$(this).find('.panel-description').text().match(re)){
+					console.log($(this).parent().html());
+					$(this).fadeIn("medium");
+				}else{
+					$(this).fadeOut("medium");
+				};
 
 		});
 	});
 
-//For #rvote
+	//For #rvote
 
 	OffScreenNav.init();
 	//$('.panel').toggle(function(){
-		//$(this).addClass('flip');
+	//$(this).addClass('flip');
 	//},function(){
-		//$(this).removeClass('flip');
+	//$(this).removeClass('flip');
 	//});
 
 
 	$('.invite-new-friend').bind("click", function(){
 		$("#offscreen-addfriend").css("top", "0%");
 	});
-    
-    function get_user_name(uid, callback) {
-        FB.api("/" + uid, function (response) {
-            console.log(response.username);
-            callback(response.username);
-        });
-    }
+
+	function get_user_name(uid, callback) {
+		FB.api("/" + uid, function (response) {
+			console.log(response.username);
+			callback(response.username);
+		});
+	}
 
 
-    var hash_chat_heads = {};
+	var hash_chat_heads = {};
 	$('.invite-new-friend-close').bind("click", function(){
-        $("#sortable").empty();
+		$("#sortable").empty();
 		$("#offscreen-addfriend").css("top", "100%");
 		console.log(invited_friends_ids);
-        console.log(invited_friends_objects);
-        for(var i=0;i<invited_friends_objects.length;i++)
-        {
-            var friend = invited_friends_objects[i];
-            if(!(friend.id in hash_chat_heads))
-            {
-                $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.pic + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
-                hash_chat_heads[friend.id] = 1;
-            }
-        }
-		for(var i=0;i<invited_friends_ids.length;i++)
+		console.log(invited_friends_objects);
+		for(var i=0;i<invited_friends_objects.length;i++)
+	{
+		var friend = invited_friends_objects[i];
+		if(!(friend.id in hash_chat_heads))
+	{
+		$('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.pic + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+		hash_chat_heads[friend.id] = 1;
+	}
+	}
+	for(var i=0;i<invited_friends_ids.length;i++)
 	{
 		get_user_name(invited_friends_ids[i], function(username){
 			invited_friends_names.push(username);
@@ -646,9 +647,9 @@ $(document).ready(function(){
 	$( "#sortable" ).sortable();
 
 	var hash = {};
-    var invited_friends_ids = [];
-    var invited_friends_names = [];
-    var invited_friends_objects = [];
+	var invited_friends_ids = [];
+	var invited_friends_names = [];
+	var invited_friends_objects = [];
 	$("#select").autocomplete({
 		source: friends,
 		close: function(e,obj) {
@@ -657,28 +658,28 @@ $(document).ready(function(){
 		select: function(e, obj) {
 			var pic = obj.item.pic;
 			if(!(pic in hash))
-	        {
-		        $('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-		    hash[pic]=1
-            invited_friends_ids.push(obj.item.id);
-            invited_friends_objects.push(obj.item);
-		    $(".close").on('click', function(){
-                var pic = $(this).parent().find('img').attr('src');
-                var temp = [];
-                delete hash[pic];
-                for(var i=0;i<invited_friends_objects.length;i++)
-                {
-                        console.log(invited_friends_objects[i].pic);
-                        console.log(pic);
-                        if(invited_friends_objects[i].pic!=pic)
-                            temp.push(invited_friends_objects[i]);
-                }
-                console.log("invited " +invited_friends_objects);
-                console.log("temp "+temp);
-                invited_friends_objects = temp;
-				$(this).parent().hide("slide",{direction:"left"},"slow");
-			});
-	    }   
+	{
+		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+		hash[pic]=1
+		invited_friends_ids.push(obj.item.id);
+	invited_friends_objects.push(obj.item);
+	$(".close").on('click', function(){
+		var pic = $(this).parent().find('img').attr('src');
+		var temp = [];
+		delete hash[pic];
+		for(var i=0;i<invited_friends_objects.length;i++)
+	{
+		console.log(invited_friends_objects[i].pic);
+		console.log(pic);
+		if(invited_friends_objects[i].pic!=pic)
+		temp.push(invited_friends_objects[i]);
+	}
+	console.log("invited " +invited_friends_objects);
+	console.log("temp "+temp);
+	invited_friends_objects = temp;
+	$(this).parent().hide("slide",{direction:"left"},"slow");
+	});
+	}   
 		}
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
 		return $("<li/>")
@@ -687,38 +688,10 @@ $(document).ready(function(){
 	};
 
 	//// listen to the server /////
-	ss.event.on('newPartiOnline', function (parti) {
-		if (parti.fbID === thisPrati.fbID) {
-			return;
-		}
-		if (thisEvent.addParticipate(parti)) {
-			//TODO accpeted change status
-		} else {
-			thisEvent.participates[parti.fbID].isOnline = true;
-			//TODO light up online icon;
-		}
-	});
-
-	ss.event.on('partiVote', function (movie){
-		if (thisEvent.addSelectedMovies(movie)) {
-			addtoSelectedMlist(movie);
-		} else {
-			addVoteOnMovie(movie);
-		}
-	});
-
-	ss.event.on('updateMovies', function(reco, sorted){
-		thisEvent.comrecoMovies = reco;
-		thisEvent.sortedMovies =sorted;
-		for (key in thisEvent.comrecoMovies) {
-			console.log("=-=-=-=-",thisEvent.comrecoMovies[key].title);
-		}
-		updatePanel(0);
-	});
 
 
 	//////
-/*	function facebookInit() {
+	/*	function facebookInit() {
 		FB.init({
 			appId: '389973247769015',
 			status: true,
@@ -781,7 +754,46 @@ function joinMovieEvent() {
 				currentNUM++;
 			}
             addSelectedMoviesNewComer(thisEvent.selectedMovies);
+			//TODO update friend;
 		}
+
+		$(window).bind('beforeunload', function(){
+			ss.rpc('movie_rpc.partiOffline', eventID, thisPrati);
+		});
+
+		ss.event.on('newPartiOnline', function (parti) {
+			if (parti.fbID === thisPrati.fbID) {
+				return;
+			}
+			if (thisEvent.addParticipate(parti)) {
+				//TODO accpeted change status
+			} else {
+				thisEvent.participates[parti.fbID].isOnline = true;
+				//TODO light up online icon;
+			}
+		});
+
+		ss.event.on('partiVote', function (movie){
+			if (thisEvent.addSelectedMovies(movie)) {
+				addtoSelectedMlist(movie);
+			} else {
+				addVoteOnMovie(movie);
+			}
+		});
+
+		ss.event.on('updateMovies', function(reco, sorted){
+			thisEvent.comrecoMovies = reco;
+			thisEvent.sortedMovies =sorted;
+			for (key in thisEvent.comrecoMovies) {
+				console.log("=-=-=-=-",thisEvent.comrecoMovies[key].title);
+			}
+			updatePanel(0);
+		});
+
+		ss.event.on('updateFriendList', function(newFriendList){
+			//TODO update friend;
+		});
+
 		getMovies(thisPrati.fbID);
 		//TODO add callback for showFriendsList
 		function showFriendsList() {

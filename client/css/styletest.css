@@ -44,6 +44,9 @@ button {
 	font-family: "FontAwesome";
 	border-radius: 1em;
 	background-color: rgba(37,37,37,0);
+	font-size: 1.5em;
+	color: rgba(255, 252, 252, 0.8);
+	text-decoration:none;
 }
 
 .movie-container {
@@ -86,7 +89,10 @@ button {
     top: 0;
     position:absolute;
     height:100%;
-    width:100%;
+}
+
+.voting {
+	width: 20em;
 }
 
 #title-bar{
