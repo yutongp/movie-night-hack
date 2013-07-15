@@ -664,7 +664,9 @@ function joinMovieEvent() {
 			console.log("new comerrrrrrrr");
 			for (var i = 0; i < thisEvent.sortedMovies.length && i < RECOMMANDNUM; i++) {
 				console.log("new comerrrrrrrr", thisEvent.sortedMovies[i].title);
+				appendPanel(currentNUM);
 				addMovieContainer(thisEvent.sortedMovies[i], i, ".front");
+				currentNUM++;
 			}
 		}
 		getMovies(thisPrati.fbID);
