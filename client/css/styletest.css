@@ -12,6 +12,12 @@ html, body {
 	margin:0;
 	font: 14px "FontAwesome", "Lucida Grande", Helvetica, Arial, sans-serif;
 	font-family: "FontAwesome";
+	background-color:#333;
+}
+
+ul {
+	list-style-type:none;
+	margin:auto;
 }
 
 button {
@@ -38,12 +44,16 @@ button {
 	font-family: "FontAwesome";
 	border-radius: 1em;
 	background-color: rgba(37,37,37,0);
+	font-size: 1.5em;
+	color: rgba(255, 252, 252, 0.8);
+	text-decoration:none;
 }
 
 .movie-container {
 	margin-left:auto;
 	margin-right:auto;
 	float: left;
+	padding-left: 55px;
 }
 
 
@@ -73,14 +83,20 @@ button {
 .selected-movie-list {
 	width:20rem;
 	display: table-cell;
-	background-color:rgba(0,0,0,0.5);
+	background-color:rgba(70,70,70,0.5);
 }
 
 .selected-movie-list .wrap-list {
     top: 0;
     position:absolute;
     height:100%;
-    width:100%;
+}
+
+.voting {
+	width: 20em;
+}
+.voting > li {
+	height: 102px;
 }
 
 #title-bar{
@@ -167,9 +183,10 @@ button {
 	top: 100%;
 	position: absolute;
 	z-index: 3;
-	background-color: rgba(255, 255, 255, .4);
+	background-color: rgba(255, 255, 255, 1);
 	-webkit-transition: top 1s;
 	transition: top 1s;
+   box-shadow: 0 8px 6px 6px black;
 }
 
 .offscreen-addfriend.offscreen-rises {
@@ -372,6 +389,75 @@ button {
 
 .friend-avatar { width: 60px; height: 60px;}
 .ui-autocomplete > li { width: 50px; height: 70px; }
+
+.list-title {
+	font-size: 2em;
+	padding: 5px;
+	padding-left: 25px;
+	font-weight: bold;
+	color: #ddd;
+	background-color:#aaa;
+	   box-shadow: 0 8px 6px -6px black;
+}
+
+
+.blue-button {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00799e), color-stop(1,
+	#00799e) );
+	background:-moz-linear-gradient( center top, #00799e 5%, #00799e 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00799e',
+	endColorstr='#00799e');
+	background-color:#00799e;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:2px solid #02add3;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:normal;
+	padding:5px 25px;
+	text-decoration:none;
+	margin: 24px;
+}.blue-button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00799e), color-stop(1,
+	#00799e) );
+	background:-moz-linear-gradient( center top, #00799e 5%, #00799e 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00799e',
+	endColorstr='#00799e');
+	background-color:#00799e;
+}.blue-button:active {
+	position:relative;
+	top:1px;
+}
+
+.btn-group {
+	margin: auto;
+	position: absolute;
+	top: 3%;
+	left: 25%;
+
+}
+
+.ui-state-inner {
+	float: left;
+	width: 40px;
+	margin-right: 1px;
+}
+
+.ui-state-inner > span1 {
+	display: block;
+	font-size: 20px;
+	padding: 11px;
+}
+
+.movie-avatar {
+	float: left;
+	height: 100px;
+	width: 90px;
+}
+
 
 
 /* #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }

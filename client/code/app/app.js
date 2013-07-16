@@ -17,10 +17,26 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	this.addParticipate = function (parti) {
 		if (this.participates[parti.fbID] == undefined) {
 			this.participates[parti.fbID] = new Participate();
+			this.participates[parti.fbID].state = "panding";
+            this.participates[parti.fbID].name = parti.name;
+            this.participates[parti.fbID].photourl = parti.photourl;
+            this.participates[parti.fbID].usrname = parti.usrname;
+            this.participates[parti.fbID].fbID = parti.fbID;
+
+			if (parti.isHost) {
+				this.host = parti;
+			}
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	this.partiOnline = function (parti) {
+		if (this.participates[parti.fbID] == undefined) {
+			this.addParticipate(parti);
+		}
+		this.participates[parti.fbID].state = "online";
 	}
 
 	this.addComrecoMovies = function (movie) {
@@ -45,6 +61,7 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 function Participate () {
 	this.name = "";
 	this.fbID = "";
+	this.usrname = "";
 	this.photourl = "";
 	this.recommandMovies = {};
 	this.friendList = {};
@@ -156,7 +173,7 @@ function recommend()
 
 function getRelatedMovies(name)
 {
-	var urlId = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=jm483swc8eux9rgtcn7hjndz&q='
+	var urlId = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=v6mngmk6srv6uvukn8jkz2sy&q='
 		+ name + '&page_limit=1';
 
 	$.get(urlId, function (response) {
@@ -164,7 +181,7 @@ function getRelatedMovies(name)
 			var id = response.movies[0].id;
 			//alert(response.movies[0].title);
 			var url = 'http://api.rottentomatoes.com/api/public/v1.0/movies/'
-				+ id + '/similar.json?apikey=jm483swc8eux9rgtcn7hjndz';
+				+ id + '/similar.json?apikey=v6mngmk6srv6uvukn8jkz2sy';
 
 			$.get(url, calculateFrequency, "jsonp");
 		}
@@ -249,7 +266,7 @@ function updateMoviesC(movieList) {
 
 	for (var i = 0; i < thisEvent.movieList.length; i++) {
 		var movie = new Movie();
-		var data = movieList[i];
+		var data = thisEvent.movieList[i];
 		movie.movieID = data.alternate_ids.imdb;
 		movie.title = data.title;
 		movie.description = data.plot;
@@ -263,6 +280,7 @@ function updateMoviesC(movieList) {
 		thisEvent.sortedMovies.push(movie);
 	}
 	
+	console.log("current result length: " + thisEvent.movieList.length);
 	updateComrecoMovies();
 }
 
@@ -336,13 +354,39 @@ var OffScreenNav = {
 	}
 };
 
+function playTrailer(name) {
+	var url = 'http://gdata.youtube.com/feeds/api/videos?q='+name+'-trailer&start-index=1&max-results=1&v=2&alt=json&hd';
+	$.get(url, function (response) {
+		var link = response.feed.entry[0].media$group.media$content[0].url;
+		console.log(link);
+		window.open(link, '_blank','height=600,width=980,top=300,left=430,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+	}, "json");
+}
+
+function postFeed() {
+	var feed = {
+		link : 'yutong.me',
+		description : 'Amazon Movie Socials will recommend movies for movie night participants, and they can vote a favorite movie to watch',
+		message: 'I have just created my own movie night. Come to join and vote, my friends!',
+		name: "Amazon Movie Socials", 
+		picture: 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash4/276925_177084509094567_2073532307_n.jpg',
+			caption: 'yutong.me'
+	};
+
+	FB.api('/me/feed', 'post', feed, function(resp) {
+		console.log("post id:" + resp.id);
+	});
+}
 
 function appendPanel(ind) {
-	//TODO change i back to 0
 	$(".movie-container").append(ss.tmpl['panel'].render({panel_index: ind}));
 
 	$(".panel-"+ind).find(".panel-vote").bind("click", function() {
 		voteOnComrecoMovies(this);
+	});
+	$(".panel-"+ind).find(".panel-trailer").bind("click", function() {
+		console.log("dsdsd");
+		playTrailer($(this).attr("movie-title"));
 	});
 }
 
@@ -367,6 +411,7 @@ function addMovieContainer(movie, index, side) {
 	$(".panel.panel-"+ index).find(side).find(".movie-image2").html('<img src=' + movie.imgurl + ' >');
 	addRate($(".panel.panel-"+ index).find(side).find(".rating"), movie.rate);
 	$(".panel.panel-"+ index).find(".panel-vote").attr("movie-id", movie.movieID);
+	$(".panel.panel-"+ index).find(".panel-trailer").attr("movie-title", movie.title);
 	$(".panel.panel-"+ index).find(".panel-vote").attr("panel-index", index);
 	$(".panel.panel-"+ index).find(".panel-title").html('<h4>' + movie.title +'</h4>');
 	$(".panel.panel-"+ index).find(".panel-pg-rate").html(movie.pgRate + " - " + movie.genre);
@@ -382,8 +427,6 @@ function voteOnComrecoMovies(selecter) {
 	console.log("this parti vote on", index);
 	if (thisEvent.comrecoMovies[mID] != undefined) {
 		var votedmovie = thisEvent.comrecoMovies[mID];
-		//TODO add vote in callback NOT HERE
-		//votedmovie.vote++;
 	} else {
 		for (var key in thisEvent.comrecoMovies) {
 			console.log(key);
@@ -397,7 +440,6 @@ function voteOnComrecoMovies(selecter) {
 }
 
 function addVoteOnMovie(movie){
-	//TODO add vote change order ...
 	var value = movie.vote;
 	var id = movie.movieID;
 	thisEvent.selectedMovies[id].vote = movie.vote;
@@ -458,8 +500,9 @@ function addSelectedMoviesNewComer(selectedMovies)
 }
 
 function addtoSelectedMlist(movie) {
-	//TODO check dup title on the list
-		$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().appendTo(".voting").show("slide", {direction:"right"},"fast");
+		/*$('<li class="ui-state-default"><a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a><img class="friend-avatar" src=' + movie.imgurl + '>' + '  votes: <span1 class='+movie.movieID+'></span1></li>').hide().appendTo(".voting").show("slide", {direction:"right"},"fast");*/
+   $('<li class="ui-state-default" ><div class="ui-state-inner"> <a class="upvote"><button class="btn"><i class="icon-arrow-up"></i></button></a><span1 class="'+movie.movieID+'">1</span1><a class="downvote"><button class="btn"><i class="icon-arrow-down"></i></button></a></div><img class="movie-avatar friend-avatar" src='+ movie.imgurl+'><div style="width: 145px;float: left;"><button class="blue-button">1-Click Buy</button></div></li>').hide().appendTo(".voting").show("slide", {direction:"right"}, "fast");
+
     bind_events();
 	addVoteOnMovie(movie);
 	console.log("add", movie.title, "to selected Movie list");
@@ -518,7 +561,6 @@ function facebookInit() {
 				joinMovieEvent();
 				//getMovies(100006228727252);
 				//if ( == true) {
-				//TODO only showFriends for the host
 				//}
 			});
 		}
@@ -534,30 +576,47 @@ $(document).ready(function(){
 		e.preventDefault();
 	});
 
+	$(".btn").on('click', function(e) {
+		var genre = $(this).attr('value');
+		$('.panel').each(function(){
+			var re = new RegExp(genre, 'i')
+			//console.log("title "+$(this).find('.panel-title').text());
+			//console.log("description: "+$(this).find('.panel-description').text());
+			if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
+				$(this).find('.panel-description').text().match(re)){
+					console.log($(this).parent().html());
+					$(this).fadeIn("medium");
+				}else{
+					$(this).fadeOut("medium");
+				};
+
+		});
+
+	});
+
 	$(".filter").keyup(function(e) {
 		$('.panel').each(function(){
 			var re = new RegExp($('.filter').val(), 'i')
 			//console.log("title "+$(this).find('.panel-title').text());
 			//console.log("description: "+$(this).find('.panel-description').text());
-
-                if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
-                    $(this).find('.panel-description').text().match(re)){
-                console.log($(this).parent().html());
-                $(this).fadeIn("medium");
-                }else{
-                $(this).fadeOut("medium");
-                };
+			if($(this).find('.panel-title').text().match(re) || $(this).find('.panel-pg-rate').text().match(re) ||
+				$(this).find('.panel-description').text().match(re)){
+					console.log($(this).parent().html());
+					$(this).fadeIn("medium");
+				}else{
+					$(this).fadeOut("medium");
+				};
 
 		});
 	});
 
-//For #rvote
+	//For #rvote
 
 	OffScreenNav.init();
 	//$('.panel').toggle(function(){
-		//$(this).addClass('flip');
+	//$(this).addClass('flip');
 	//},function(){
-		//$(this).removeClass('flip');
+	//$(this).removeClass('flip');
 	//});
 
     var friends_invited = [];
@@ -568,31 +627,94 @@ $(document).ready(function(){
 		$("#offscreen-addfriend").css("top", "0%");
 	});
 
-	$('.invite-new-friend-close').bind("click", function(){
-        console.log("close clicked");
-        console.log(friends_invited);
+	function get_user_name(uid, callback) {
+		FB.api("/" + uid, function (response) {
+			console.log(response.username);
+			callback(response.username, uid);
+		});
+	}
+
+
+	var hash_chat_heads = {};
+	$('.invite-new-friend-close-cancel').bind('click', function() {
+		$(".close").click();
+		$("#sortable").empty();
 		$("#offscreen-addfriend").css("top", "100%");
+	});
+
+    function append_username(id, username)
+    {
+        for(var i=0;i<invited_friends_objects.length;i++)
+        {
+            if(invited_friends_objects[i].id = id)
+                invited_friends_objects[i]['usrname'] = username;
+        }
+    }
+	$('.invite-new-friend-close').bind("click", function(){
+		$("#sortable").empty();
+		$("#offscreen-addfriend").css("top", "100%");
+		console.log(invited_friends_ids);
+		console.log(invited_friends_objects);
+		for(var i=0;i<invited_friends_objects.length;i++)
+	{
+		var friend = invited_friends_objects[i];
+		if(!(friend.id in hash_chat_heads))
+	{
+		/*$('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.photo + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");*/
+		hash_chat_heads[friend.id] = 1;
+	}
+	}
+	for(var i=0;i<invited_friends_ids.length;i++)
+	{
+		get_user_name(invited_friends_ids[i], function(username, id){
+			invited_friends_names.push(username);
+            append_username(id, username);
+			if(invited_friends_ids.length == invited_friends_names.length) {
+				console.log(invited_friends_names);
+				postFeed();
+                console.log(invited_friends_objects);
+				ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_objects);
+			}
+
+		});
+	}
 	});
 
 	$( "#sortable" ).sortable();
 
 	var hash = {};
+	var invited_friends_ids = [];
+	var invited_friends_names = [];
+	var invited_friends_objects = [];
 	$("#select").autocomplete({
 		source: friends,
 		close: function(e,obj) {
 			$("#select").val("");
 		},
 		select: function(e, obj) {
-			var label = obj.item.label;
-			if(!(label in hash))
+			var pic = obj.item.pic;
+			if(!(pic in hash))
 	{
-		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '/>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
-		hash[obj.item.label]=1
-        friends_invited.push(obj.item.id);
-		$(".close").on('click', function()
-			{
-				$(this).parent().hide("slide",{direction:"left"},"slow");
-			});
+		$('<li class="ui-state-default"><img class="friend-avatar" src=' + obj.item.pic + '>' + obj.item.label + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+		hash[pic]=1
+		invited_friends_ids.push(obj.item.id);
+	invited_friends_objects.push(obj.item);
+	$(".close").on('click', function(){
+		var pic = $(this).parent().find('img').attr('src');
+		var temp = [];
+		delete hash[pic];
+		for(var i=0;i<invited_friends_objects.length;i++)
+	{
+		console.log(invited_friends_objects[i].pic);
+		console.log(pic);
+		if(invited_friends_objects[i].pic!=pic)
+		temp.push(invited_friends_objects[i]);
+	}
+	console.log("invited " +invited_friends_objects);
+	console.log("temp "+temp);
+	invited_friends_objects = temp;
+	$(this).parent().hide("slide",{direction:"left"},"slow");
+	});
 	}
 		}
 	}).data("ui-autocomplete")._renderItem = function (ul, item) {
@@ -602,40 +724,10 @@ $(document).ready(function(){
 	};
 
 	//// listen to the server /////
-	ss.event.on('newPartiOnline', function (parti) {
-		if (parti.fbID === thisPrati.fbID) {
-			return;
-		}
-		if (thisEvent.addParticipate(parti)) {
-			//TODO accpeted change status
-		} else {
-			thisEvent.participates[parti.fbID].isOnline = true;
-			//TODO light up online icon;
-		}
-	});
-
-	ss.event.on('partiVote', function (movie){
-		if (thisEvent.addSelectedMovies(movie)) {
-			//TODO not on list, add to list;
-			addtoSelectedMlist(movie);
-		} else {
-			addVoteOnMovie(movie);
-			//TODO on list, add on vote number;
-		}
-	});
-
-	ss.event.on('updateMovies', function(reco, sorted){
-		thisEvent.comrecoMovies = reco;
-		thisEvent.sortedMovies =sorted;
-		for (key in thisEvent.comrecoMovies) {
-			console.log("=-=-=-=-",thisEvent.comrecoMovies[key].title);
-		}
-		updatePanel(0);
-	});
 
 
 	//////
-/*	function facebookInit() {
+	/*	function facebookInit() {
 		FB.init({
 			appId: '389973247769015',
 			status: true,
@@ -682,6 +774,9 @@ function joinMovieEvent() {
 		thisEvent.sortedMovies = serverEvent.sortedMovies;
 		thisEvent.selectedMovies = serverEvent.selectedMovies;
 		thisEvent.movieList = serverEvent.movieList;
+		if (thisEvent.movieList === undefined) {
+			thisEvent.movieList = new Array();
+		}
 		thisEvent.host = serverEvent.host;
 
 
@@ -695,7 +790,62 @@ function joinMovieEvent() {
 				currentNUM++;
 			}
             addSelectedMoviesNewComer(thisEvent.selectedMovies);
+			//TODO update friend;
+
+            for(var key in thisEvent.participates)
+            {
+                var friend = thisEvent.participates[key];
+                $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.photourl + '/>' + friend.name +
+             '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+            }
+
 		}
+
+		$(window).bind('beforeunload', function(){
+			ss.rpc('movie_rpc.partiOffline', eventID, thisPrati);
+		});
+
+		ss.event.on('newPartiOnline', function (parti) {
+			if (parti.fbID === thisPrati.fbID) {
+				return;
+			}n
+			if (thisEvent.addParticipate(parti)) {
+				//TODO accpeted change status
+			} else {
+				thisEvent.participates[parti.fbID].isOnline = true;
+				//TODO light up online icon;
+			}
+		});
+
+		ss.event.on('partiVote', function (movie){
+			if (thisEvent.addSelectedMovies(movie)) {
+				addtoSelectedMlist(movie);
+			} else {
+				addVoteOnMovie(movie);
+			}
+		});
+
+		ss.event.on('updateMovies', function(reco, sorted){
+			thisEvent.comrecoMovies = reco;
+			thisEvent.sortedMovies =sorted;
+			for (key in thisEvent.comrecoMovies) {
+				console.log("=-=-=-=-",thisEvent.comrecoMovies[key].title);
+			}
+			updatePanel(0);
+		});
+
+		ss.event.on('updateFriendList', function(newFriendList){
+           $("#final_selected_list").empty();
+            console.log(newFriendList);
+		  for(var key in newFriendList)
+            {
+                var friend = newFriendList[key];
+                $('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.photourl + '/>' + friend.name +
+             '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");
+            }
+	
+		});
+
 		getMovies(thisPrati.fbID);
 		//TODO add callback for showFriendsList
 		function showFriendsList() {
@@ -707,204 +857,10 @@ function joinMovieEvent() {
 			var data = response.data;
 			count = data.length;
 			for (var i = 0; i < data.length; i++) {
-				var obj  = {'id':data[i].id, 'label':data[i].name, 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
+				var obj  = {'id':data[i].id,'fbID':data[i].id, 'label':data[i].name,'name':data[i].name, 'photourl':'http://graph.facebook.com/' + data[i].id + '/picture', 'pic':'http://graph.facebook.com/' + data[i].id + '/picture'};
 				friends.push(obj);
 			}
 		}
 		showFriendsList();
-		//TODO show movie exist
-
-
-		//var aM = new Movie();
-		//aM.title = "Inception";
-		//aM.movieID = 10222;
-		//aM.imgurl = 'http://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg';
-		//aM.rate = 8.8;
-		//aM.genre = 'action,adventure,mystery';
-		//aM.pgRate = "PG-13";
-		//aM.description = "Hobbs has Dom and Brian reassemble their crew in order to take down a mastermind who commands an organization of mercenary drivers across 12 countries. Payment? Full pardons for them all.";
-
-
-		//for (var i = 0; i < RECOMMANDNUM; i++) {
-			//addMovieContainer(aM, i, ".front");
-			//addMovieContainer(aM, i, ".back");
-		//}
-		//thisEvent.addComrecoMovies(aM);
-
-		//var movie2 = new Movie();
-		//movie2.title = "Dark Knight Rises";
-		//movie2.movieID = 111;
-		//movie2.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg'
-			//movie2.rate = 8.6;
-		//movie2.genre = 'action,crime,thriller';
-		//movie2.pgRate = "PG-13";
-		//movie2.description = "Eight years on, a new evil rises from where the Batman and Commissioner Gordon tried to bury it, causing the Batman to resurface and fight to protect Gotham City... the very city which brands him an enemy."
-			//addMovieContainer(movie2,2,".front");
-		//addMovieContainer(movie2,2,".back");
-		//thisEvent.addComrecoMovies(movie2);
-
-		//var movie3 = new Movie();
-		//movie3.title = "Despicable Me";
-		//movie3.movieID = 222;
-		//movie3.imgurl = 'http://upload.wikimedia.org/wikipedia/en/d/db/Despicable_Me_Poster.jpg'
-			//movie3.rate = 7.6;
-		//movie3.genre = 'animation,comedy,crime';
-		//movie3.pgRate = "PG-13";
-		//movie3.description = "When a criminal mastermind uses a trio of orphan girls as pawns for a grand scheme, he finds their love is profoundly changing him for the better."
-			//addMovieContainer(movie3,7,".front");
-		//addMovieContainer(movie3,7,".back");
-		//thisEvent.addComrecoMovies(movie3);
-
-		//var movie4 = new Movie();
-		//movie4.title = "Following";
-		//movie4.movieID = 333;
-		//movie4.imgurl = 'http://upload.wikimedia.org/wikipedia/en/5/55/Following_film_poster.jpg'
-			//movie4.rate = 7.6;
-		//movie4.genre = 'crime, drama, mystery';
-		//movie4.pgRate = "R";
-		//movie4.description = "A young writer who follows strangers for material meets a thief who takes him under his wing."
-			//addMovieContainer(movie4,1,".front");
-		//addMovieContainer(movie4,1,".back");
-		//thisEvent.addComrecoMovies(movie4);
-
-		//var movie5 = new Movie();
-		//movie5.title = "Memento";
-		//movie5.movieID = 444;
-		//movie5.imgurl = 'http://upload.wikimedia.org/wikipedia/en/c/c7/Memento_poster.jpg'
-			//movie5.rate = 8.6;
-		//movie5.genre = 'mystery,thriller';
-		//movie5.pgRate = "R";
-		//movie5.description = "A man, suffering from short-term memory loss, uses notes and tattoos to hunt for the man he thinks killed his wife."
-			//addMovieContainer(movie5,3,".front");
-		//addMovieContainer(movie5,3,".back");
-		//thisEvent.addComrecoMovies(movie5);
-
-		//var movie6 = new Movie();
-		//movie6.title = "The Shawshank Redemption";
-		//movie6.movieID = 555;
-		//movie6.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg'
-			//movie6.rate = 9.3;
-		//movie6.genre = 'crime,drama';
-		//movie6.pgRate = "R";
-		//movie6.description = "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
-			//addMovieContainer(movie6,4,".front");
-		//addMovieContainer(movie6,4,".back");
-		//thisEvent.addComrecoMovies(movie6);
-
-		//var movie7 = new Movie();
-		//movie7.title = "Howl's Moving Castle";
-		//movie7.movieID = 666;
-		//movie7.imgurl = 'http://upload.wikimedia.org/wikipedia/en/a/a0/Howls-moving-castleposter.jpg'
-			//movie7.rate = 8.1;
-		//movie7.genre = 'animation,action,adventure';
-		//movie7.pgRate = "PG";
-		//movie7.description = "When an unconfident young woman is cursed with an old body by a spiteful witch, her only chance of breaking the spell lies with a self-indulgent yet insecure young wizard and his companions in his legged, walking home."
-			//addMovieContainer(movie7,5,".front");
-		//addMovieContainer(movie7,5,".back");
-		//thisEvent.addComrecoMovies(movie7);
-
-		//var movie8 = new Movie();
-		//movie8.title = "The Matrix";
-		//movie8.movieID = 777;
-		//movie8.imgurl = 'http://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg'
-			//movie8.rate = 8.7;
-		//movie8.genre = 'science-fiction,action,adventure';
-		//movie8.pgRate = "R";
-		//movie8.description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
-			//addMovieContainer(movie8,6,".front");
-		//addMovieContainer(movie8,6,".back");
-		//thisEvent.addComrecoMovies(movie8);
-
-
-        
-		/*for (var i = 0; i < RECOMMANDNUM; i++) {
-			addMovieContainer(aM, i, ".front");
-			addMovieContainer(aM, i, ".back");
-		}
-		thisEvent.addComrecoMovies(aM);
-        
-        var movie2 = new Movie();
-        movie2.title = "Dark Knight Rises";
-        movie2.movieID = 111;
-        movie2.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg'
-        movie2.rate = 8.6;
-        movie2.genre = 'action,crime,thriller';
-        movie2.pgRate = "PG-13";
-        movie2.description = "Eight years on, a new evil rises from where the Batman and Commissioner Gordon tried to bury it, causing the Batman to resurface and fight to protect Gotham City... the very city which brands him an enemy."
-        addMovieContainer(movie2,2,".front");
-        addMovieContainer(movie2,2,".back");
-        thisEvent.addComrecoMovies(movie2);
-
-        var movie3 = new Movie();
-        movie3.title = "Despicable Me";
-        movie3.movieID = 222;
-        movie3.imgurl = 'http://upload.wikimedia.org/wikipedia/en/d/db/Despicable_Me_Poster.jpg'
-        movie3.rate = 7.6;
-        movie3.genre = 'animation,comedy,crime';
-        movie3.pgRate = "PG-13";
-        movie3.description = "When a criminal mastermind uses a trio of orphan girls as pawns for a grand scheme, he finds their love is profoundly changing him for the better."
-        addMovieContainer(movie3,7,".front");
-        addMovieContainer(movie3,7,".back");
-        thisEvent.addComrecoMovies(movie3);
-
-        var movie4 = new Movie();
-        movie4.title = "Following";
-        movie4.movieID = 333;
-        movie4.imgurl = 'http://upload.wikimedia.org/wikipedia/en/5/55/Following_film_poster.jpg'
-        movie4.rate = 7.6;
-        movie4.genre = 'crime, drama, mystery';
-        movie4.pgRate = "R";
-        movie4.description = "A young writer who follows strangers for material meets a thief who takes him under his wing."
-        addMovieContainer(movie4,1,".front");
-        addMovieContainer(movie4,1,".back");
-        thisEvent.addComrecoMovies(movie4);
-        
-        var movie5 = new Movie();
-        movie5.title = "Memento";
-        movie5.movieID = 444;
-        movie5.imgurl = 'http://upload.wikimedia.org/wikipedia/en/c/c7/Memento_poster.jpg'
-        movie5.rate = 8.6;
-        movie5.genre = 'mystery,thriller';
-        movie5.pgRate = "R";
-        movie5.description = "A man, suffering from short-term memory loss, uses notes and tattoos to hunt for the man he thinks killed his wife."
-        addMovieContainer(movie5,3,".front");
-        addMovieContainer(movie5,3,".back");
-        thisEvent.addComrecoMovies(movie5);
-
-        var movie6 = new Movie();
-        movie6.title = "The Shawshank Redemption";
-        movie6.movieID = 555;
-        movie6.imgurl = 'http://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg'
-        movie6.rate = 9.3;
-        movie6.genre = 'crime,drama';
-        movie6.pgRate = "R";
-        movie6.description = "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
-        addMovieContainer(movie6,4,".front");
-        addMovieContainer(movie6,4,".back");
-        thisEvent.addComrecoMovies(movie6);
- 
-        var movie7 = new Movie();
-        movie7.title = "Howl's Moving Castle";
-        movie7.movieID = 666;
-        movie7.imgurl = 'http://upload.wikimedia.org/wikipedia/en/a/a0/Howls-moving-castleposter.jpg'
-        movie7.rate = 8.1;
-        movie7.genre = 'animation,action,adventure';
-        movie7.pgRate = "PG";
-        movie7.description = "When an unconfident young woman is cursed with an old body by a spiteful witch, her only chance of breaking the spell lies with a self-indulgent yet insecure young wizard and his companions in his legged, walking home."
-        addMovieContainer(movie7,5,".front");
-        addMovieContainer(movie7,5,".back");
-        thisEvent.addComrecoMovies(movie7);
-
-        var movie8 = new Movie();
-        movie8.title = "The Matrix";
-        movie8.movieID = 777;
-        movie8.imgurl = 'http://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg'
-        movie8.rate = 8.7;
-        movie8.genre = 'science-fiction,action,adventure';
-        movie8.pgRate = "R";
-        movie8.description = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."
-        addMovieContainer(movie8,6,".front");
-        addMovieContainer(movie8,6,".back");
-        thisEvent.addComrecoMovies(movie8); */
 	});
 }
