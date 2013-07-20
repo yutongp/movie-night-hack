@@ -1,16 +1,12 @@
 {
-  "name": "nnm",
-  "description": "An awesome real time application",
+  "name": "application-name",
   "version": "0.0.1",
-  "author": "Me <me@mydomain.com>",
   "private": true,
-  "engines": { "node": ">= 0.6.0" },
-  "dependencies": {
-    "socketstream": "0.3.x",
-    "ss-stylus": "0.1.x",
-    "ss-hogan": "0.1.x"
+  "scripts": {
+    "start": "node app.js"
   },
-  "scripts":{
-    "start":"node app.js"
+  "dependencies": {
+    "express": "3.3.4",
+    "jade": "*"
   }
 }

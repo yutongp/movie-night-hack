@@ -1,59 +1,65 @@
-// My SocketStream 0.3 app
+/**
+ * Module dependencies.
+ */
 
-var http = require('http'),
-	fs = require('fs'),
-	ss = require('socketstream');
+var express = require('express')
+	, routes = require('./routes')
+	, user = require('./routes/user')
+	, http = require('http')
+	, path = require('path');
 
-var options = {
-  key: fs.readFileSync('./ssl/privatekey.pem'),
-  cert: fs.readFileSync('./ssl/certificate.pem')
-};
+var app = express();
 
-// Define a single-page client called 'main'
-ss.client.define('main', {
-	view: 'app.html',
-	css:  ['style.css','bootstrap.min.css','jquery-ui-1.10.3.custom.css'],
-	code: ['libs/jquery.min.js','libs/jquery-ui-1.10.3.custom.js','libs/all.js','app'],
-	tmpl: '*'
+// all environments
+app.set('port', process.env.PORT || 8080);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.set('env', 'development');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'share')));
+
+// development only
+if ('development' == app.get('env')) {
+	app.use(express.errorHandler());
+}
+
+app.get('/', routes.index);
+app.get('/:eventID', routes.index);
+app.get('/users', user.list);
+
+var server = http.createServer(app).listen(app.get('port'), function(){
+	console.log('Express server listening on port ' + app.get('port'));
 });
 
-// Serve this client on the root URL
-ss.http.route('/', function(req, res){
-	res.serveClient('main');
+var io = require('socket.io').listen(server);
+
+
+function movieEvent (eventID) {
+	this.p = {};
+	this.movieList = {};
+	this.recoMovies = {};
+}
+
+
+io.sockets.on('connection', function(socket){
+	socket.on('connect', function(data){
+		//call function for connect and send the socket and data
+		console.log("in");
+	});
+
+	//event when a client disconnects from the app
+	socket.on('disconnect', function(){
+		console.log("out");
+	});
+	socket.on('room', function(room) {
+		socket.join(room);
+		io.sockets.in('foobar').emit('message', 'anyone in this room yet?');
+		io.sockets.in(room).emit('message', 'what is going on, party people?');
+	});
 });
 
-ss.client.define('test', {
-	view: 'test.html',
-	css:  ['bootstrap.min.css', 'jquery-ui-1.10.3.custom.css', 'styletest.css'],
-	code: ['libs/jquery.min.js', 'libs/jquery-ui-1.10.3.custom.js', 'libs/all.js','app'],
-	tmpl: '*'
-});
-
-ss.http.route('/test', function(req, res){
-	res.serveClient('test');
-});
-
-ss.client.define('home', {
-	view: 'home.html',
-	css:  ['style.css','bootstrap.min.css', 'jquery-ui-1.10.3.custom.css'],
-	code: ['libs/jquery.min.js','libs/jquery-ui-1.10.3.custom.js', 'app'],
-	tmpl: '*'
-});
-
-ss.http.route('/home', function(req, res){
-	res.serveClient('home');
-});
-
-// Use server-side compiled Hogan (Mustache) templates. Others engines available
-ss.client.templateEngine.use(require('ss-hogan'));
-
-// Minimize and pack assets if you type: SS_ENV=production node app.js
-if (ss.env === 'production') ss.client.packAssets();
-
-// Start web server
-//var server = http.Server(options, ss.http.middleware);
-var server = http.Server(ss.http.middleware);
-server.listen(8000);
-
-// Start SocketStream
-ss.start(server);
