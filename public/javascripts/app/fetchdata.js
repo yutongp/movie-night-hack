@@ -67,6 +67,7 @@ function getFriendsList() {
 		//}
 	});
 }
+
 window.fbAsyncInit = function() {
 	// init the FB JS SDK
 	FB.init({
@@ -92,3 +93,4 @@ window.fbAsyncInit = function() {
 //facebookInit();
 //
 //
+
