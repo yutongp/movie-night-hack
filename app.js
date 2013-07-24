@@ -6,7 +6,8 @@ var express = require('express')
 	, routes = require('./routes')
 	, user = require('./routes/user')
 	, http = require('http')
-	, path = require('path');
+	, path = require('path')
+	, Step = require('step');
 
 var app = express();
 
@@ -45,7 +46,6 @@ function movieEvent (eventID) {
 	this.recoMovies = {};
 }
 
-
 io.sockets.on('connection', function(socket){
 	socket.on('connect', function(data){
 		//call function for connect and send the socket and data
@@ -57,6 +57,14 @@ io.sockets.on('connection', function(socket){
 		console.log("out");
 	});
 	socket.on('room', function(room) {
+		Step (
+			function a() {
+				console.log(123);
+			},
+			function b(err, res) {
+				console.log(321);
+			}
+			);
 		socket.join(room);
 		io.sockets.in('foobar').emit('message', 'anyone in this room yet?');
 		io.sockets.in(room).emit('message', 'what is going on, party people?');
