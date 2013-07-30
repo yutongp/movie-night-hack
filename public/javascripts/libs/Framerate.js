@@ -14,6 +14,7 @@ var Framerate = function() {
 	//var isChrome = !!window.chrome; // Chrome 1+
 	//var isIE = /*@cc_on!@*/false; // At least IE6
 
+	//var timer = Date;
 	var timer = (isSafari) ? Date : performance;
 	var requestAnimationFrame = window.requestAnimationFrame ||
 		window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||

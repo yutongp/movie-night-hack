@@ -42,6 +42,7 @@ var pIndex = 0;
 var currentColor = 0;
 var container, framerateObj, chagneId, attackString;
 var enableMiddlewareWhite = 0;
+var attackTimePerPixel = 5000;
 
 
 function toggleBackground() {
@@ -72,10 +73,11 @@ function changebyPattern() {
 	}
 	pIndex++;
 	if (pIndex === pattern.length + 1) {
-		clearInterval(chagneId);
 		processData();
+	} else {
+		chagneId = setTimeout(changebyPattern, attackTimePerPixel);
+		framerateObj.reset();
 	}
-	framerateObj.reset();
 }
 
 
@@ -103,7 +105,7 @@ function readInPattern(){
 		}
 		document.getElementById("inField").innerHTML = "";
 		framerateObj.start();
-		chagneId = setInterval(changebyPattern, 5000);
+		chagneId = setTimeout(changebyPattern, attackTimePerPixel);
 	} else {
 		alert("Empty Input");
 	}
