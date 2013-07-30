@@ -10,7 +10,3 @@ exports.list = function(req, res){
 exports.test = function(req, res){
   res.render('test', { title: 'Movie Night' });
 };
-
-exports.test2 = function(req, res){
-  res.render('test2.html');
-};
