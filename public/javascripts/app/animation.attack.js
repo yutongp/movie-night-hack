@@ -45,38 +45,39 @@ var enableMiddlewareWhite = 0;
 var attackTimePerPixel = 5000;
 
 
-function toggleBackground() {
+function toggleBackground(avg) {
 	if (hasClassName(container, 'bblack')) {
 		//console.log('black:', framerateObj.updateAvgFramerate());
-		blackData.push(framerateObj.updateAvgFramerate());
+		blackData.push(avg);
 		removeClassName(container, 'bblack');
 	} else {
 		//console.log('white:', framerateObj.updateAvgFramerate());
-		whiteData.push(framerateObj.updateAvgFramerate());
+		whiteData.push(avg);
 		addClassName(container, 'bblack');
 	}
 }
 
 
 function changebyPattern() {
+	var avgFR = framerateObj.updateAvgFramerate();
 	if (pattern[pIndex  % pattern.length] === currentColor) {
 		if (currentColor === 1) {
 			//console.log('black:', framerateObj.updateAvgFramerate());
-			blackData.push(framerateObj.updateAvgFramerate());
+			blackData.push(avgFR);
 		} else {
 			//console.log('white:', framerateObj.updateAvgFramerate());
-			whiteData.push(framerateObj.updateAvgFramerate());
+			whiteData.push(avgFR);
 		}
 	}	else {
-		toggleBackground();
+		toggleBackground(avgFR);
 		currentColor = pattern[pIndex % pattern.length];
 	}
 	pIndex++;
 	if (pIndex === pattern.length + 1) {
 		processData();
 	} else {
-		chagneId = setTimeout(changebyPattern, attackTimePerPixel);
 		framerateObj.reset();
+		chagneId = setTimeout(changebyPattern, attackTimePerPixel);
 	}
 }
 
