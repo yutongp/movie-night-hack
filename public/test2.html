@@ -14,19 +14,19 @@
 	</head>
 	<body>
 		<div id="inputField">
-		Input a sequence of black(1) and white(0), exp:101001
+		Input a sequence of <span style="background-color: black;">Black</span>(1) and <span style="background-color: #ffffcc;">White</span>(0), exp:101001
 		<input type="text" id="inputString" value="" maxlength="500" />
-		, Attack Time per color (ms):
+		, Attack Time per Color (ms):
 		<input type="text" id="inputTime" value="" placeholder="5000" maxlength="100" style="width: 50px;" />
 		, <input type="checkbox" id="inputCheck" checked="true"/>
-		Insert white between each attack color, Resolution: 
+		Insert white color between each attack color, Resolution: 
 		<select id="inputSelect">
 			<option value="Native">Native Resolution</option>
 			<option value="2880">2880x1800</option>
 			<option value="5760">5760x3600</option>
 			<option value="10000">10000x7000</option>
 		</select>
-		<button onclick="readInPattern()" >Submit</button>
+		<button id="attackStart" onclick="readInPattern()" >Submit</button>
 		</div>
 
 		<div id="container" style="display: none;">
@@ -49,6 +49,9 @@
 		</div>
 
 		<div id="graph" style="display: none;">
+			<div>
+				<p id="graph-info">In Left Graph, <span style="background-color: #81a3d0;">Blue Line</span> is Frame Rate for <span style="background-color: #ffffcc;">White Color</span>; <span style="background-color: #c4c2c7;">Gray Line</span> is Frame Rate for <span style="background-color: black;">Black Color</span>. </br> Right Grpah shows Frame Rate changes for the attackString: </p>
+			</div>
 			<canvas id="black-white-graph" width="400" height="400"></canvas>
 			<canvas id="attack-graph" width="400" height="400"></canvas>
 		</div>

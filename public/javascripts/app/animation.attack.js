@@ -160,6 +160,8 @@ function readInPattern(){
 
 function processData() {
 	document.getElementById("container").style.display = "none";
+	document.getElementById("inputField").style.display = "";
+	document.getElementById("attackStart").style.display = "none";
 	document.getElementById("graph").style.display = "";
 	var whiteIndex = 0;
 	var blackIndex = 0;
@@ -216,9 +218,9 @@ function processData() {
 		labels : labels.slice(0, attackData.length),
 		datasets : [
 		{
-			fillColor : "rgba(220,220,220,0.5)",
-			strokeColor : "rgba(220,220,220,1)",
-			pointColor : "rgba(220,220,220,1)",
+			fillColor : "rgba(150,50,120,0.5)",
+			strokeColor : "rgba(150,50,120,1)",
+			pointColor : "rgba(150,50,120,1)",
 			pointStrokeColor : "#fff",
 			data : attackData
 		}
@@ -226,8 +228,8 @@ function processData() {
 	}
 	var myNewChart2 = new Chart(ctx2).Line(data2);
 	//el = document.createElement("li");
-	document.getElementById("graph").appendChild(
-			document.createTextNode("attackString: " + attackString) );
+	document.getElementById("graph-info").appendChild(
+			document.createTextNode(attackString + ".") );
 }
 
 window.onload = function () {
