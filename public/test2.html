@@ -13,36 +13,42 @@
 		<link rel="stylesheet" href="/stylesheets/animation.attack.css">
 	</head>
 	<body>
-		<div id="inField">
+		<div id="inputField">
 		Input a sequence of black(1) and white(0), exp:101001
 		<input type="text" id="inputString" value="" maxlength="500" />
-		<input type="checkbox" id="inputCheck" checked="true"/>
-		insert white between each attack color
+		, Attack Time per color (ms):
+		<input type="text" id="inputTime" value="" placeholder="5000" maxlength="100" style="width: 50px;" />
+		, <input type="checkbox" id="inputCheck" checked="true"/>
+		Insert white between each attack color, Resolution: 
+		<select id="inputSelect">
+			<option value="Native">Native Resolution</option>
+			<option value="2880">2880x1800</option>
+			<option value="5760">5760x3600</option>
+			<option value="10000">10000x7000</option>
+		</select>
 		<button onclick="readInPattern()" >Submit</button>
 		</div>
 
-		<div id="out-container">
-			<div id="container">
-				<div id="stage">
-					<div id="shape" class="cube backfaces">
-						<div class="plane one"></div>
-						<div class="plane two"></div>
-						<div class="plane three"></div>
-						<div class="plane four"></div>
-						<div class="plane five"></div>
-						<div class="plane six"></div>
-						<div class="plane seven"></div>
-						<div class="plane eight"></div>
-						<div class="plane nine"></div>
-						<div class="plane ten"></div>
-						<div class="plane eleven"></div>
-						<div class="plane twelve"></div>
-					</div>
+		<div id="container" style="display: none;">
+			<div id="stage">
+				<div id="shape" class="cube backfaces">
+					<div class="plane one"></div>
+					<div class="plane two"></div>
+					<div class="plane three"></div>
+					<div class="plane four"></div>
+					<div class="plane five"></div>
+					<div class="plane six"></div>
+					<div class="plane seven"></div>
+					<div class="plane eight"></div>
+					<div class="plane nine"></div>
+					<div class="plane ten"></div>
+					<div class="plane eleven"></div>
+					<div class="plane twelve"></div>
 				</div>
 			</div>
 		</div>
 
-		<div id="graph">
+		<div id="graph" style="display: none;">
 			<canvas id="black-white-graph" width="400" height="400"></canvas>
 			<canvas id="attack-graph" width="400" height="400"></canvas>
 		</div>

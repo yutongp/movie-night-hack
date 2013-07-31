@@ -84,9 +84,9 @@ function changebyPattern() {
 
 function readInPattern(){
 	var textInput = document.getElementById("inputString");
-	if (document.getElementById("inputCheck").checked) {
-		enableMiddlewareWhite = 1;
-	}
+
+	// check whether to insert middle white color
+	enableMiddlewareWhite = (document.getElementById("inputCheck").checked) ? 1 : 0;
 	attackString = textInput.value;
 	var labelIndex = 0;
 	if (attackString.length > 0) {
@@ -104,7 +104,52 @@ function readInPattern(){
 				labels.push(labelIndex++);
 			}
 		}
-		document.getElementById("inField").innerHTML = "";
+
+		//input time
+		var timeString = document.getElementById("inputTime").value;
+		if (timeString != "") {
+			attackTimePerPixel = parseInt(timeString.match(/\d+$/), 10);
+		}
+		console.log(attackTimePerPixel);
+
+		//resolution selection
+		var x=document.getElementById("inputSelect").selectedIndex;
+		var y=document.getElementById("inputSelect").options;
+		if (y[x].value === "2880") {
+			document.getElementById("container").style.width = "2880px";
+			document.getElementById("container").style.height = "1800px";
+			document.getElementById("shape").style.width = "800px";
+			document.getElementById("shape").style.height = "800px";
+			var elems = document.getElementsByClassName("plane");
+			for(var i = 0; i < elems.length; i++) {
+				elems[i].style.width = '800px';
+				elems[i].style.height = '800px';
+			}
+		} else if (y[x].value === "5760") {
+			document.getElementById("container").style.width = "5760px";
+			document.getElementById("container").style.height = "3600px";
+			document.getElementById("shape").style.width = "1600px";
+			document.getElementById("shape").style.height = "1600px";
+			var elems = document.getElementsByClassName("plane");
+			for(var i = 0; i < elems.length; i++) {
+				elems[i].style.width = '1600px';
+				elems[i].style.height = '1600px';
+			}
+		} else if (y[x].value === "10000") {
+			document.getElementById("container").style.width = "10000px";
+			document.getElementById("container").style.height = "7000px";
+			document.getElementById("shape").style.width = "3000px";
+			document.getElementById("shape").style.height = "3000px";
+			var elems = document.getElementsByClassName("plane");
+			for(var i = 0; i < elems.length; i++) {
+				elems[i].style.width = '3000px';
+				elems[i].style.height = '3000px';
+			}
+		}
+
+		//start
+		document.getElementById("inputField").style.display = "none";
+		document.getElementById("container").style.display = "";
 		framerateObj.start();
 		chagneId = setTimeout(changebyPattern, attackTimePerPixel);
 	} else {
@@ -114,7 +159,8 @@ function readInPattern(){
 
 
 function processData() {
-	document.getElementById("out-container").innerHTML = "";
+	document.getElementById("container").style.display = "none";
+	document.getElementById("graph").style.display = "";
 	var whiteIndex = 0;
 	var blackIndex = 0;
 
