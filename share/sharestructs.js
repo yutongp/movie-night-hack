@@ -1,32 +1,33 @@
 // share code
+
 var HALF_STARCODE = "&#xF123;";
 var FULL_STARCODE = "&#xF005;";
 var EMPTY_STARCODE = "&#xF006;";
 
-function MovieEvent (eventid, eventHost, lo, ti) {
-	this.participates = {};
+function MovieEvent (eventID, eventHost, location, time) {
+	this.users = {};
 	this.comrecoMovies = {};
 	this.selectedMovies = {};
 	this.movieList = new Array();
 	this.sortedMovies = new Array();
-	this.loca = lo;
-	this.time = ti;
-	this.eventID = eventid;
+	this.location = location;
+	this.time = time;
+	this.eventID = eventID;
 	this.host = eventHost;
-	this.partiNum = 0;
+	this.userNum = 0;
 
-	this.addParticipate = function (parti) {
-		if (this.participates[parti.fbID] == undefined) {
-			this.participates[parti.fbID] = new Participate();
-			this.participates[parti.fbID].state = "panding";
-			this.participates[parti.fbID].name = parti.name;
-			this.participates[parti.fbID].photourl = parti.photourl;
-			this.participates[parti.fbID].usrname = parti.usrname;
-			this.participates[parti.fbID].fbID = parti.fbID;
-			this.partiNum++;
+	this.addUser = function (user) {
+		if (this.users[user.fbID] == undefined) {
+			this.users[user.fbID] = new User();
+			this.users[user.fbID].state = "pending";
+			this.users[user.fbID].name = user.name;
+			this.users[user.fbID].photourl = user.photourl;
+			this.users[user.fbID].username = user.username;
+			this.users[user.fbID].fbID = user.fbID;
+			this.userNum++;
 
-			if (parti.isHost) {
-				this.host = parti;
+			if (user.isHost) {
+				this.host = user;
 			}
 			return true;
 		} else {
@@ -34,14 +35,14 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 		}
 	}
 
-	this.partiOnline = function (parti) {
-		if (this.participates[parti.fbID] == undefined) {
-			this.addParticipate(parti);
+	this.userOnline = function (user) {
+		if (this.users[user.fbID] == undefined) {
+			this.addUser(user);
 		}
-		this.participates[parti.fbID].state = "online";
+		this.users[user.fbID].state = "online";
 	}
 
-	this.addComrecoMovies = function (movie) {
+	this.addComRecoMovies = function (movie) {
 		if (this.comrecoMovies[movie.movieID] == undefined) {
 			this.comrecoMovies[movie.movieID] = movie;
 			return true;
@@ -60,20 +61,20 @@ function MovieEvent (eventid, eventHost, lo, ti) {
 	}
 }
 
-function Participate () {
+function User() {
 	this.name = "";
 	this.fbID = "";
-	this.usrname = "";
+	this.username = "";
 	this.photourl = "";
-	this.recommandMovies = {};
+	this.recommendMovies = {};
 	this.friendList = {};
 	this.state = "";
 	this.isHost = false;
 	this.isOnline = false;
 
-	this.addRecommandMovies = function (movie) {
-		if (this.recommandMovies[movie.movieID] == undefined) {
-			this.recommandMovies[movie.movieID] = movie;
+	this.addRecommendMovies = function (movie) {
+		if (this.recommendMovies[movie.movieID] == undefined) {
+			this.recommendMovies[movie.movieID] = movie;
 			return true;
 		} else {
 			return false;
@@ -81,7 +82,7 @@ function Participate () {
 	}
 }
 
-function Movie () {
+function Movie() {
 	this.movieID = "";
 	this.title = "";
 	this.imgurl = "";
