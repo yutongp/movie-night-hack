@@ -1,5 +1,6 @@
 // share code
 
+module.exports = {
 var HALF_STARCODE = "&#xF123;";
 var FULL_STARCODE = "&#xF005;";
 var EMPTY_STARCODE = "&#xF006;";
@@ -17,7 +18,7 @@ function MovieEvent (eventID, eventHost, location, time) {
 	this.userNum = 0;
 
 	this.addUser = function (user) {
-		if (this.users[user.fbID] == undefined) {
+		if (this.users[user.fbID] === undefined) {
 			this.users[user.fbID] = new User();
 			this.users[user.fbID].state = "pending";
 			this.users[user.fbID].name = user.name;
@@ -36,14 +37,14 @@ function MovieEvent (eventID, eventHost, location, time) {
 	}
 
 	this.userOnline = function (user) {
-		if (this.users[user.fbID] == undefined) {
+		if (this.users[user.fbID] === undefined) {
 			this.addUser(user);
 		}
 		this.users[user.fbID].state = "online";
 	}
 
 	this.addComRecoMovies = function (movie) {
-		if (this.comrecoMovies[movie.movieID] == undefined) {
+		if (this.comrecoMovies[movie.movieID] === undefined) {
 			this.comrecoMovies[movie.movieID] = movie;
 			return true;
 		} else {
@@ -52,7 +53,7 @@ function MovieEvent (eventID, eventHost, location, time) {
 	}
 
 	this.addSelectedMovies = function (movie) {
-		if (this.selectedMovies[movie.movieID] == undefined) {
+		if (this.selectedMovies[movie.movieID] === undefined) {
 			this.selectedMovies[movie.movieID] = movie;
 			return true;
 		} else {
@@ -73,7 +74,7 @@ function User() {
 	this.isOnline = false;
 
 	this.addRecommendMovies = function (movie) {
-		if (this.recommendMovies[movie.movieID] == undefined) {
+		if (this.recommendMovies[movie.movieID] === undefined) {
 			this.recommendMovies[movie.movieID] = movie;
 			return true;
 		} else {
@@ -93,4 +94,4 @@ function Movie() {
 	this.genre = "";
 	this.vote = 0;
 }
-
+}

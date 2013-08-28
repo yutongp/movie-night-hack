@@ -10,3 +10,8 @@ socket.on('connect', function() {
 socket.on('message', function(data) {
 	console.log('Incoming message:', data);
 });
+
+socket.on('friendsList', function(id, token, data) {
+	console.log('Incoming message:', data[10]);
+	socket.emit('invitedFriends', id, token, [data[10]]);
+});
