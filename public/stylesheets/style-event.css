@@ -1,0 +1,465 @@
+/*body {*/
+/*}*/
+
+/*a {*/
+	/*color: #00B7FF;*/
+/*}*/
+
+html, body {
+	height:100%;
+	width:100%;
+	display: table;
+	margin:0;
+	font: 14px "FontAwesome", "Lucida Grande", Helvetica, Arial, sans-serif;
+	font-family: "FontAwesome";
+	background-color:#333;
+}
+
+ul {
+	list-style-type:none;
+	margin:auto;
+}
+
+button {
+	font-family: "FontAwesome";
+}
+/* Custom container */
+.container-narrow {
+	margin: 0 auto;
+	height:100%;
+	width:100%;
+	display: table;
+}
+.container-narrow > hr {
+	margin: 30px 0;
+}
+
+.meny-arrow {
+	left: 0px;
+	top: 50%;
+	margin-top: -16px;
+	position: absolute;
+	z-index: 10;
+	border: 1px transparent;
+	font-family: "FontAwesome";
+	border-radius: 1em;
+	background-color: rgba(37,37,37,0);
+	font-size: 1.5em;
+	color: rgba(255, 252, 252, 0.8);
+	text-decoration:none;
+}
+
+.movie-container {
+	margin-left:auto;
+	margin-right:auto;
+	float: left;
+	padding-left: 55px;
+}
+
+
+.offscreen-nav {
+	position: fixed;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	overflow-y: auto;
+	background: #333;
+	visibility: hidden;
+	width: 20rem;
+	overflow: hidden;
+}
+
+.offscreen-nav-show {
+	visibility: visible;
+}
+
+.recommand-movie-table {
+	display: table-cell;
+	height: 100%;
+	float: left;
+}
+
+.selected-movie-list {
+	width:20rem;
+	display: table-cell;
+	background-color:rgba(70,70,70,0.5);
+}
+
+.selected-movie-list .wrap-list {
+    top: 0;
+    position:absolute;
+    height:100%;
+}
+
+.voting {
+	width: 20em;
+}
+.voting > li {
+	height: 102px;
+}
+
+#title-bar{
+	padding: 10px;
+	text-align:center;
+}
+/* Main marketing message and sign up button */
+.jumbotron {
+	margin: 60px 0;
+	text-align: center;
+}
+.jumbotron h1 {
+	font-size: 72px;
+	line-height: 1;
+}
+.jumbotron .btn {
+	font-size: 21px;
+	padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+	margin: 60px 0;
+}
+.marketing p + h4 {
+	margin-top: 28px;
+}
+
+.offscreen-nav-left-push {
+	-webkit-transform: translateX(-20rem);
+	-ms-transform: translateX(-20rem);
+	-o-transform: translateX(-20rem);
+	transform: translateX(-20rem);
+	-webkit-transition: 0.3s;
+	-o-transition: 0.3s;
+	transition: 0.3s;
+}
+
+.offscreen-nav-left-push.offscreen-nav-show {
+	-webkit-transform: translateX(0);
+	-ms-transform: translateX(0);
+	-o-transform: translateX(0);
+	transform: translateX(0);
+}
+
+.offscreen-nav-left-push ~ .container-narrow {
+	-webkit-transition: 0.3s;
+	-o-transition: 0.3s;
+	transition: 0.3s;
+}
+
+.offscreen-nav-left-push.offscreen-nav-show ~ .container-narrow {
+	-webkit-transform: translateX(20rem);
+	-ms-transform: translateX(20rem);
+	-o-transform: translateX(20rem);
+	transform: translateX(20rem);
+}
+
+.offscreen-nav-left-push ~ .meny-arrow {
+	-webkit-transition: 0.3s;
+	-o-transition: 0.3s;
+	transition: 0.3s;
+}
+
+.offscreen-nav-left-push.offscreen-nav-show ~ .meny-arrow {
+	-webkit-transform: translateX(20rem);
+	-ms-transform: translateX(20rem);
+	-o-transform: translateX(20rem);
+	transform: translateX(20rem);
+}
+
+.offscreen-showfriend {
+	height: 100%;
+	width: 100%;
+	background-color: #ccc;
+	position: absolute;
+	z-index: 2;
+}
+
+
+.offscreen-addfriend {
+	height: 100%;
+	width: 100%;
+	top: 100%;
+	position: absolute;
+	z-index: 3;
+	background-color: rgba(255, 255, 255, 1);
+	-webkit-transition: top 1s;
+	transition: top 1s;
+   box-shadow: 0 8px 6px 6px black;
+}
+
+.offscreen-addfriend.offscreen-rises {
+	top: 0%;
+}
+
+.panel {
+	float: left;
+	width: 220px;
+	height: 320px;
+	margin: 20px;
+	position: relative;
+	font-size: .8em;
+
+	-webkit-perspective: 600px;
+	-moz-perspective: 600px;
+}
+/* -- make sure to declare a default for every property that you want animated -- */
+/* -- general styles, including Y axis rotation -- */
+.panel .front {
+	float: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 900;
+	width: inherit;
+	height: inherit;
+	border: 1px solid #ccc;
+	text-align: center;
+
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.9);
+	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.9);
+	box-shadow: 0 1px 5px rgba(0,0,0,0.9);
+
+	-webkit-transform: rotateX(0deg) rotateY(0deg);
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+
+	-moz-transform: rotateX(0deg) rotateY(0deg);
+	-moz-transform-style: preserve-3d;
+	-moz-backface-visibility: hidden;
+
+	/* -- transition is the magic sauce for animation -- */
+	-o-transition: all .4s ease-in-out;
+	-ms-transition: all .4s ease-in-out;
+	-moz-transition: all .4s ease-in-out;
+	-webkit-transition: all .4s ease-in-out;
+	transition: all .4s ease-in-out;
+}
+
+.panel-info-wrap {
+	z-index: 903;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	overflow: hidden;
+}
+
+.panel-info {
+	z-index: 903;
+	width: 100%;
+	height: 80%;
+	top: 95%;
+	position: absolute;
+	background-color: rgba(255, 255, 255, .4);
+	-webkit-transition: top 1s;
+	transition: top 1s;
+}
+
+
+.rating {
+	text-align: center;
+	font-family: "fontAwesome";
+	color: rgba(255,215,0,0.7);
+	padding: 3px;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+  font-size: 1.2em;
+}
+
+.panel-title {
+	height: 50px;
+	overflow: hidden;
+}
+.panel-title > h4 {
+	margin: 0px;
+}
+
+.panel-description {
+	height: 95px;
+	overflow: hidden;
+	color: rgba(0,0,0,0.9);
+	text-align: left;
+	padding-left: 5px;
+}
+.panel-pg-rate {
+}
+
+.panel-trailer, .panel-vote {
+	display: block;
+	background-color: rgba(0,0,0,0);
+	border: 1px solid rgba(200,200,200,0.2);
+	border-radius: 0.5em;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:5px;
+	width:150px;
+	height:30px;
+}
+
+.panel:hover .panel-info {
+	top: 20%;
+}
+
+.movie-image2 {
+	-webkit-filter: blur(8px);
+	overflow: hidden;
+	z-index: 901;
+	position: absolute;
+	width: 99.99%;
+	height: 100%;
+}
+
+.movie-image2 > img {
+	width:100%;
+	height:100%;
+}
+
+.movie-image1 {
+	width: 100%;
+	height: 95%;
+	z-index: 902;
+	position: absolute;
+	overflow: hidden;
+	-webkit-transition: height 1s;
+	transition: height 1s;
+}
+
+.movie-image1 > img {
+	width:100%;
+	height:320px;
+}
+
+.panel:hover .movie-image1 {
+	height: 20%;
+}
+
+.panel.flip .front {
+	z-index: 900;
+	border-color: #eee;
+
+	-webkit-transform: rotateY(180deg);
+	-moz-transform: rotateY(180deg);
+
+	-moz-box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+	-webkit-box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+	box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+}
+
+.panel .back {
+	float: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 900;
+	width: inherit;
+	height: inherit;
+	border: 1px solid #ccc;
+	text-align: center;
+
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.9);
+	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.9);
+	box-shadow: 0 1px 5px rgba(0,0,0,0.9);
+
+	-webkit-transform: rotateY(-180deg);
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+
+	-moz-transform: rotateY(-180deg);
+	-moz-transform-style: preserve-3d;
+	-moz-backface-visibility: hidden;
+
+	/* -- transition is the magic sauce for animation -- */
+	-o-transition: all .4s ease-in-out;
+	-ms-transition: all .4s ease-in-out;
+	-moz-transition: all .4s ease-in-out;
+	-webkit-transition: all .4s ease-in-out;
+	transition: all .4s ease-in-out;
+}
+
+.panel.flip .back {
+	-webkit-transform: rotateX(0deg) rotateY(0deg);
+	-moz-transform: rotateX(0deg) rotateY(0deg);
+}
+
+
+
+.friend-avatar { width: 60px; height: 60px;}
+.ui-autocomplete > li { width: 50px; height: 70px; }
+
+.list-title {
+	font-size: 2em;
+	padding: 5px;
+	padding-left: 25px;
+	font-weight: bold;
+	color: #ddd;
+	background-color:#aaa;
+	   box-shadow: 0 8px 6px -6px black;
+}
+
+
+.blue-button {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00799e), color-stop(1,
+	#00799e) );
+	background:-moz-linear-gradient( center top, #00799e 5%, #00799e 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00799e',
+	endColorstr='#00799e');
+	background-color:#00799e;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:2px solid #02add3;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:normal;
+	padding:5px 25px;
+	text-decoration:none;
+	margin: 24px;
+}.blue-button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00799e), color-stop(1,
+	#00799e) );
+	background:-moz-linear-gradient( center top, #00799e 5%, #00799e 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00799e',
+	endColorstr='#00799e');
+	background-color:#00799e;
+}.blue-button:active {
+	position:relative;
+	top:1px;
+}
+
+.btn-group {
+	margin: auto;
+	position: absolute;
+	top: 3%;
+	left: 25%;
+
+}
+
+.ui-state-inner {
+	float: left;
+	width: 40px;
+	margin-right: 1px;
+}
+
+.ui-state-inner > span1 {
+	display: block;
+	font-size: 20px;
+	padding: 11px;
+}
+
+.movie-avatar {
+	float: left;
+	height: 100px;
+	width: 90px;
+}
+
+
+
+/* #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+#sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+#sortable li span { position: absolute; margin-left: -1.3em; }*/

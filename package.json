@@ -10,6 +10,7 @@
 		"jade": "*",
 		"socket.io":"*",
 		"async":"*",
+		"everyauth":"*",
 		"mongoose":"*"
 	}
 }

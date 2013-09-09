@@ -1,0 +1,31 @@
+extends event-header
+block content
+    nav.offscreen-nav#offscreen-nav
+        button.invite-new-friend#invite-new-friend &#xF067; Invite Friends
+        .offscreen-showfriend: #friends_status_view: #final_selected_list
+        .offscreen-addfriend(align='center')#offscreen-addfriend
+            form.form-search
+                input(type='text').input-medium.search-query#select
+            ul#sortable
+            button.invite-new-friend-close-cancel Cancel
+            button.invite-new-friend-close Send Invitation
+    button(href='#button').meny-arrow &#xF0DA;
+    .container-narrow
+        #title-bar
+            .btn-group(data-toggle='buttons-radio')
+                button.btn Home
+                for genre in genres
+                    button(value='#{genre}') #{genre}
+            form.form-search
+                .input-append
+                    input(type='text')
+                    button(type='submit').btn
+                        i.icon-search
+        .recommand-movie-table
+            .movie-container
+                -for(var panel_index = 1; panel_index <= RECOMMANDNUM; panel_index++)
+                    include event-panel
+        .selected-movie-list
+            .wrap-list
+                .list-title Top Contenders
+                .voting

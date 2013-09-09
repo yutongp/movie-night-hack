@@ -10,3 +10,4 @@ exports.list = function(req, res){
 exports.test = function(req, res){
   res.render('test', { title: 'Movie Night' });
 };
+
