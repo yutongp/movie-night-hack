@@ -1,16 +1,40 @@
-var movieSocket = (function() {
-  var eventID;
+
   var socket;
+  var eventID;
+  var spinner;
+var movieSocket = (function() {
 
   var matches = document.location.href.match(/\/event\/([^\/]+)/);
   if(matches) {
     eventID = matches[1];
     socket = io.connect('http://127.0.0.1:8080');
+    //socket = io.connect('http://127.0.0.1:8080');
 
 
     socket.on('connect', function() {
       // Connected, let's sign-up for to receive messages for this room
       socket.emit('room', eventID);
+      var opts = {
+        lines: 13, // The number of lines to draw
+        length: 20, // The length of each line
+        width: 10, // The line thickness
+        radius: 30, // The radius of the inner circle
+        corners: 1, // Corner roundness (0..1)
+        rotate: 0, // The rotation offset
+        direction: 1, // 1: clockwise, -1: counterclockwise
+        color: '#000', // #rgb or #rrggbb or array of colors
+        speed: 1, // Rounds per second
+        trail: 60, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false, // Whether to use hardware acceleration
+        className: 'spinner', // The CSS class to assign to the spinner
+        zIndex: 2e9, // The z-index (defaults to 2000000000)
+        top: '300', // Top position relative to parent in px
+        left: 'auto' // Left position relative to parent in px
+      };
+      spinner = new Spinner(opts).spin(document.getElementById('spin'));
+
+      socket.emit('requestForMovies', eventID, ['100001503913338']);
     });
 
     socket.on('message', function(data) {
@@ -21,14 +45,42 @@ var movieSocket = (function() {
       console.log('Incoming message:', data[10], data[12]);
       socket.emit('invitedFriends', id, token, [data[10], data[12]]);
     });
+
+    socket.on('moviesData', function(results){
+      spinner.stop();
+      moviePanel.updatePanel(sortMovies(results));
+    });
   }
 
   return {
-    
-  
+    requireMovies: function(idArray, callback) {
+    }
   }
 })();
 
+var sortMovies = function (hashMovies) {
+  function popularMovies(movieA, movieB) {
+    if (movieA.ref < movieB.ref) {
+      return 1;
+    } else if (movieA.ref > movieB.ref) {
+      return -1;
+    } else {
+      if (movieA.imdbRating < movieB.imdbRating) {
+        return 1;
+      } else if (movieA.imdbRating > movieB.imdbRating) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
+  }
+  var movieList = [];
+  for (var key in hashMovies) {
+    movieList.push(hashMovies[key]);
+  }
+  movieList.sort(popularMovies);
+  return movieList;
+}
 
 var OffScreenNav = {
 
@@ -41,6 +93,7 @@ var OffScreenNav = {
   bindUIActions: function() {
     $(".meny-arrow").on("click", function() {
       OffScreenNav.toggleNav("offscreen-nav-left-push");
+      socket.emit('requestForMovies', eventID, ['600923123', '659337432']);
     });
   },
 
@@ -76,48 +129,93 @@ var OffScreenNav = {
 };
 
 
-function appendPanel(ind) {
-	$(".movie-container").append(ss.tmpl['panel'].render({panel_index: ind}));
-
-	$(".panel-"+ind).find(".panel-vote").bind("click", function() {
-		voteOnComrecoMovies(this);
-	});
-	$(".panel-"+ind).find(".panel-trailer").bind("click", function() {
-		console.log("dsdsd");
-		playTrailer($(this).attr("movie-title"));
-	});
-}
-
-
-function addRate(ratingObj, rate) {
+var moviePanel = function () {
   var HALF_STARCODE = "&#xF123;";
   var FULL_STARCODE = "&#xF005;";
   var EMPTY_STARCODE = "&#xF006;";
-  var ratingStar = "";
-  for (var i = 0; i < 10; i++) {
-    if (i < rate && i + 1 > rate) {
-      ratingStar += "<span>" + HALF_STARCODE + "</span>";
-    } else if (i < rate) {
-      ratingStar += "<span>" + FULL_STARCODE + "</span>";
-    } else {
-      ratingStar += "<span>" + EMPTY_STARCODE + "</span>";
+  var currentNUM = 0;
+  //TODO dynamic change RECOMMANDNUM
+  var RECOMMANDNUM = 8;
+
+  var addMovieContainer = function (movie, index, side) {
+    function addRate(ratingObj, rate) {
+      var ratingStar = "";
+      for (var i = 0; i < 10; i++) {
+        if (i < rate && i + 1 > rate) {
+          ratingStar += "<span>" + HALF_STARCODE + "</span>";
+        } else if (i < rate) {
+          ratingStar += "<span>" + FULL_STARCODE + "</span>";
+        } else {
+          ratingStar += "<span>" + EMPTY_STARCODE + "</span>";
+        }
+      }
+      ratingObj.html(ratingStar);
+    }
+    var sideObj = $(".panel.panel-"+ index).find(side);
+    sideObj.find(".movie-image1").html('<img src=' + movie.poster + ' >');
+    sideObj.find(".movie-image2").html('<img src=' + movie.poster + ' >');
+    addRate(sideObj.find(".rating"), movie.imdbRating);
+    sideObj.find(".panel-vote").attr("movie-id", movie.imdbID);
+    sideObj.find(".panel-trailer").attr("movie-title", movie.title);
+    sideObj.find(".panel-vote").attr("panel-index", index);
+    sideObj.find(".panel-title").html('<h4>' + movie.title +'</h4>');
+    sideObj.find(".panel-pg-rate").html(movie.rated + " - " + movie.genre);
+    sideObj.find(".panel-description").html('<p>' + movie.plot + '</p>');
+  }
+
+  var appendPanel = function (index) {
+    $(".panel-"+index).removeClass('invisible');
+    $(".panel-"+index).find(".panel-vote").bind("click", function() {
+      voteOnComrecoMovies(this);
+    });
+    $(".panel-"+index).find(".panel-trailer").bind("click", function() {
+      //TODO add play Trailer back
+      //playTrailer($(this).attr("movie-title"));
+    });
+  }
+
+  var flipPanelTo = function (ind, side) {
+    if (side === ".back") {
+      $('.panel-' + ind).addClass("flip");
+    } else if (side === ".front") {
+      $('.panel-' + ind).removeClass("flip");
     }
   }
-  ratingObj.html(ratingStar);
-}
 
+  var updatePanel = function (sortedMovies) {
+    for (var i = 0; i < sortedMovies.length && i < RECOMMANDNUM; i++) {
+          console.log("DDDDDDD____", currentNUM);
+      if(i < sortedMovies.length && i < RECOMMANDNUM) {
+        if (currentNUM < RECOMMANDNUM) {
+          console.log(":::::::::",i,":::::::::");
+          appendPanel(currentNUM);
+          addMovieContainer(sortedMovies[i], i,".front");
+          currentNUM++;
+        } else {
+          var side = '.front';
+          var alterSide = '.back';
+          if ($('.panel-'+i).hasClass('flip')) {
+            side = '.back';
+            alterSide = '.front';
+          }
+          if ( $(".panel.panel-"+ i)
+              .find(side).find(".panel-vote")
+              .attr("movie-id") != sortedMovies[i].imdbID) {
 
-function addMovieContainer(movie, index, side) {
-	$(".panel.panel-"+ index).find(side).find(".movie-image1").html('<img src=' + movie.imgurl + ' >');
-	$(".panel.panel-"+ index).find(side).find(".movie-image2").html('<img src=' + movie.imgurl + ' >');
-	addRate($(".panel.panel-"+ index).find(side).find(".rating"), movie.rate);
-	$(".panel.panel-"+ index).find(side).find(".panel-vote").attr("movie-id", movie.movieID);
-	$(".panel.panel-"+ index).find(side).find(".panel-trailer").attr("movie-title", movie.title);
-	$(".panel.panel-"+ index).find(side).find(".panel-vote").attr("panel-index", index);
-	$(".panel.panel-"+ index).find(side).find(".panel-title").html('<h4>' + movie.title +'</h4>');
-	$(".panel.panel-"+ index).find(side).find(".panel-pg-rate").html(movie.pgRate + " - " + movie.genre);
-	$(".panel.panel-"+ index).find(side).find(".panel-description").html('<p>' + movie.description + '</p>');
-}
+                addMovieContainer(sortedMovies[i], i, alterSide);
+                setTimeout(flipPanelTo(i, alterSide), 300);
+
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    updatePanel: updatePanel
+  }
+}();
+
 
 
 $(document).ready(function(){
@@ -160,4 +258,110 @@ $(document).ready(function(){
 
     });
   });
+
+
+  var friends_invited = [];
+  $('.invite-new-friend').bind("click", function(){
+    console.log("heeeeey");
+    console.log(friends_invited);
+    //invite(friends_invited);
+    $("#offscreen-addfriend").css("top", "0%");
+  });
+
+  function get_user_name(uid, callback) {
+    FB.api("/" + uid, function (response) {
+      console.log(response.username);
+      callback(response.username, uid);
+    });
+  }
+
+
+  var hash_chat_heads = {};
+  $('.invite-new-friend-close-cancel').bind('click', function() {
+    $(".close").click();
+    $("#sortable").empty();
+    $("#offscreen-addfriend").css("top", "100%");
+  });
+
+  function append_username(id, username)
+  {
+    for(var i=0;i<invited_friends_objects.length;i++)
+    {
+      if(invited_friends_objects[i].id = id)
+        invited_friends_objects[i]['usrname'] = username;
+    }
+  }
+  $('.invite-new-friend-close').bind("click", function(){
+    $("#sortable").empty();
+    $("#offscreen-addfriend").css("top", "100%");
+    console.log(invited_friends_ids);
+    console.log(invited_friends_objects);
+    for(var i=0;i<invited_friends_objects.length;i++)
+  {
+    var friend = invited_friends_objects[i];
+    if(!(friend.id in hash_chat_heads))
+  {
+    /*$('<li class="ui-state-default"><img class="friend-avatar" src=' + friend.photo + '/>' + friend.label + '</li>').hide().prependTo("#final_selected_list").show("slide", {direction:"left"},"fast");*/
+    hash_chat_heads[friend.id] = 1;
+  }
+  }
+  for(var i=0;i<invited_friends_ids.length;i++)
+  {
+    get_user_name(invited_friends_ids[i], function(username, id){
+      invited_friends_names.push(username);
+      append_username(id, username);
+      if(invited_friends_ids.length == invited_friends_names.length) {
+        console.log(invited_friends_names);
+        postFeed();
+        console.log(invited_friends_objects);
+        ss.rpc('movie_rpc.sendInvite', thisEventID, thisPrati.name, invited_friends_objects);
+      }
+
+    });
+  }
+  });
+
+  $( "#sortable" ).sortable();
+
+  var hash = {};
+  var invited_friends_ids = [];
+  var invited_friends_names = [];
+  var invited_friends_objects = [];
+  $("#select").autocomplete({
+    source: fbContent.friends,
+    close: function(e,obj) {
+      $("#select").val("");
+    },
+    select: function(e, obj) {
+      var pic = obj.item.profileImage;
+      if(!(pic in hash))
+  {
+    $('<li class="ui-state-default"><img class="friend-avatar" src=' + pic + '>' + obj.item.name + '<a class="close">x</a></li>').hide().prependTo("#sortable").show("slide", {direction:"left"},"fast");
+    hash[pic]=1
+    invited_friends_ids.push(obj.item.fbID);
+  invited_friends_objects.push(obj.item);
+  $(".close").on('click', function(){
+    var pic = $(this).parent().find('img').attr('src');
+    var temp = [];
+    delete hash[pic];
+    for(var i=0;i<invited_friends_objects.length;i++)
+  {
+    console.log(invited_friends_objects[i].pic);
+    console.log(pic);
+    if(invited_friends_objects[i].pic!=pic)
+    temp.push(invited_friends_objects[i]);
+  }
+  console.log("invited " +invited_friends_objects);
+  console.log("temp "+temp);
+  invited_friends_objects = temp;
+  $(this).parent().hide("slide",{direction:"left"},"slow");
+  });
+  }
+    }
+  }).data("ui-autocomplete")._renderItem = function (ul, item) {
+    return $("<li/>")
+      .append('<a><img class="friend-avatar" src='+item.profileImage+'/>' + item.name + '</a>')
+      .appendTo(ul);
+  };
+
 });

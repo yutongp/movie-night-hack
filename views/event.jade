@@ -23,8 +23,9 @@ block content
                         i.icon-search
         .recommand-movie-table
             .movie-container
-                -for(var panel_index = 1; panel_index <= RECOMMANDNUM; panel_index++)
+                -for(var panel_index = 0; panel_index < RECOMMANDNUM; panel_index++)
                     include event-panel
+                #spin
         .selected-movie-list
             .wrap-list
                 .list-title Top Contenders

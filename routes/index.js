@@ -14,6 +14,7 @@ exports.index = function(req, res){
   if (req.session.auth) {
     if (!req.cookies.fb_accesstoken) {
       res.cookie("fb_accesstoken", req.session.auth.facebook.accessToken);
+      res.cookie("fb_id", req.session.auth.facebook.user.id);
     }
     //logIn(req.session.auth.facebook);
     var authData = req.session.auth.facebook;

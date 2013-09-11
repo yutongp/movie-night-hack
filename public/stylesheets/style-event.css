@@ -49,6 +49,10 @@ button {
 	text-decoration:none;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .movie-container {
 	margin-left:auto;
 	margin-right:auto;

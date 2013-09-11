@@ -116,8 +116,11 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 });
 
 var io = require('socket.io').listen(server);
+var cookieParser = require('cookie').parse;
 
 io.sockets.on('connection', function(socket){
+  var hs = socket.handshake;
+  var cookie = cookieParser(hs.headers.cookie);
   socket.on('connect', function(data){
     //call function for connect and send the socket and data
     console.log("in");
@@ -142,8 +145,16 @@ io.sockets.on('connection', function(socket){
 
     });
   });
-});
 
+  socket.on('requestForMovies', function(room, array){
+    getRelatedMovies(array, cookie['fb_accesstoken'], function(err, movies){
+      for (var key in movies) {
+        console.log("dasdasdasdasd", movies[key]);
+      }
+      io.sockets.in(room).emit('moviesData', movies);
+    });
+  });
+});
 
 
 var getRelatedMovies = function (id_array, token, cb) {
@@ -221,15 +232,18 @@ var getRelatedMovies = function (id_array, token, cb) {
                 continue;
               }
               moviesIMDBparallelArr.push(
-                  parallelHelper(response.movies[i].alternate_ids.imdb,
-                    function(imdbId, callback) {
-                      var url = 'http://www.omdbapi.com/?i=tt' + imdbId;
+                  parallelHelper({
+                    id:response.movies[i].alternate_ids.imdb,
+                    poster: response.movies[i].posters.detailed},
+                    function(imdb, callback) {
+                      var url = 'http://www.omdbapi.com/?i=tt' + imdb.id;
                       http.get(url, function(res) {
                         var datastring = "";
                         res.on('data', function (chunk) { datastring += chunk;});
                         res.on('end', function () {
                           var obj = JSON.parse(datastring);
                           if (!obj.ERROR) {
+                            obj.AlterPoster = imdb.poster;
                             callback(null, obj);
                           } else {
                             //TODO
@@ -251,7 +265,7 @@ var getRelatedMovies = function (id_array, token, cb) {
 
   var cleanMoviesData = function (err, data, callback) {
     if(!err) {
-      var movies = [];
+      var movies = {};
       /* 1. user level */
       for (var i = 0; i < data.length; i++) {
         /* 2. movie group level */
@@ -272,6 +286,8 @@ var getRelatedMovies = function (id_array, token, cb) {
               var thisMovie = new Movie ({
                 actors: movie.Actors
                 , director: movie.Director
+                , genre: movie.Genre
+                , poster: movie.AlterPoster
                 , plot: movie.Plot
                 , rated: movie.Rated
                 , released: movie.Released
@@ -284,6 +300,9 @@ var getRelatedMovies = function (id_array, token, cb) {
                 , imdbRating: movie.imdbRating
               });
               movies[movie.imdbID] = thisMovie.toObject();
+              movies[movie.imdbID].ref = 1;
+            } else if (movies[movie.imdbID]) {
+              movies[movie.imdbID].ref++;
             }
           }
         }
