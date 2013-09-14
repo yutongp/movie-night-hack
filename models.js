@@ -35,13 +35,14 @@ var UserSchema = new Schema({
 });
 
 var EventSchema = new Schema({
-  users: [{ type: String, ref: 'User'}]
+  users: [{ type: Schema.Types.ObjectId, ref: 'User'}]
   , comRecoMovies: [{type: Schema.Types.ObjectId, ref: 'Movie'}]
   , movieVotes: {type: Schema.Types.Mixed}
   , location: { type: String, default: '', trim: true }
   , eventTime: { type: Date, default: Date.now }
   , createAt: { type: Date, default: Date.now }
-  , host: {type: String, ref: 'User'}
+  , host: {name: { type: String, default: '', trim: true }
+    , id: {type: Schema.Types.ObjectId, ref: 'User'}}
 });
 
 

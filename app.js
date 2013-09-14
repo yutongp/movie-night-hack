@@ -67,15 +67,15 @@ everyauth.facebook
         // create new user
         console.log("Create New User");
         var user = new User ({
-          name: fbData.user.name
-          , firstName: fbData.user.first_name
-          , lastName: fbData.user.last_name
-          , fbID: fbData.user.id
-          , username: fbData.user.username
-          , profileImage: 'http://graph.facebook.com/' + fbData.user.id + '/picture'
+          name: fbUserMetadata.name
+          , firstName: fbUserMetadata.first_name
+          , lastName: fbUserMetadata.last_name
+          , fbID: fbUserMetadata.id
+          , username: fbUserMetadata.username
+          , profileImage: 'http://graph.facebook.com/' + fbUserMetadata.id + '/picture'
         });
 
-        User.save(function(err,user) {
+        user.save(function(err,user) {
           if (err) return promise.fulfill([err]);
           promise.fulfill(user);
         });
@@ -110,6 +110,11 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/createEvent', routes.createEvent);
 app.get('/event/:eventID', routes.event);
+
+
+app.get('*', function(req, res){
+  res.send('what???', 404);
+});
 
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
@@ -148,9 +153,6 @@ io.sockets.on('connection', function(socket){
 
   socket.on('requestForMovies', function(room, array){
     getRelatedMovies(array, cookie['fb_accesstoken'], function(err, movies){
-      for (var key in movies) {
-        console.log("dasdasdasdasd", movies[key]);
-      }
       io.sockets.in(room).emit('moviesData', movies);
     });
   });

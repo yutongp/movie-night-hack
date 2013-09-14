@@ -7,8 +7,8 @@ var movieSocket = (function() {
   var matches = document.location.href.match(/\/event\/([^\/]+)/);
   if(matches) {
     eventID = matches[1];
-    socket = io.connect('http://127.0.0.1:8080');
     //socket = io.connect('http://127.0.0.1:8080');
+    socket = io.connect('http://128.237.168.191:8080');
 
 
     socket.on('connect', function() {
@@ -164,13 +164,22 @@ var moviePanel = function () {
   }
 
   var appendPanel = function (index) {
+    function playTrailer(name) {
+      var url = 'http://gdata.youtube.com/feeds/api/videos?q=' + 
+        name +'-trailer&start-index=1&max-results=1&v=2&alt=json&hd';
+      $.get(url, function (response) {
+        var link = response.feed.entry[0].media$group.media$content[0].url;
+        window.open(link, '_blank',
+          'height=600,width=980,top=300,left=430,toolbar=no,menubar=no, ' +
+          'scrollbars=no, resizable=no,location=no, status=no');
+      }, "json");
+    }
     $(".panel-"+index).removeClass('invisible');
     $(".panel-"+index).find(".panel-vote").bind("click", function() {
       voteOnComrecoMovies(this);
     });
     $(".panel-"+index).find(".panel-trailer").bind("click", function() {
-      //TODO add play Trailer back
-      //playTrailer($(this).attr("movie-title"));
+      playTrailer($(this).attr("movie-title"));
     });
   }
 

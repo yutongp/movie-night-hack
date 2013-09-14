@@ -4,9 +4,12 @@ block content
         h1= title
         if (everyauth.facebook)
             h3 Welcome to #{title}, #{everyauth.facebook.user.name}
+            .event-list
+                for event in events
+                    p #{event._id}, #{event.host.name}
         else
             #fb-login.fb_button(style='background-position: left -188px')
                 a.fb_button_medium(href='/auth/facebook')
                     span#fb_login_text.fb_button_text Login with Facebook
-        a(href='/createEvent') Create Event
+        a(href='/createEvent') Create New Event
         div#fb-root
