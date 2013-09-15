@@ -1,4 +1,3 @@
-extends event-header
 block content
     nav.offscreen-nav#offscreen-nav
         button.invite-new-friend#invite-new-friend &#xF067; Invite Friends
@@ -11,7 +10,7 @@ block content
             button.invite-new-friend-close Send Invitation
     button(href='#button').meny-arrow &#xF0DA;
     .container-narrow
-        #title-bar
+        #title-bar {{orderProp}}
             .btn-group(data-toggle='buttons-radio')
                 button.btn Home
                 for genre in genres

@@ -4,6 +4,7 @@
 
 var express = require('express')
   , routes = require('./routes')
+  , api = require('./routes/api')
   , http = require('http')
   , https = require('https')
   , path = require('path')
@@ -110,11 +111,13 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/createEvent', routes.createEvent);
 app.get('/event/:eventID', routes.event);
+app.get('/partials/event', routes.partialsEvent);
+app.get('/api/event/:eventID', api.getEvent)
 
 
-app.get('*', function(req, res){
-  res.send('what???', 404);
-});
+//app.get('*', function(req, res){
+  //res.send('what???', 404);
+//});
 
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1,9 +1,12 @@
 doctype 5
-html
+html(ng-app)
     head
         title= title
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(type='text/javascript', src='/javascripts/libs/socket.io.js')
+        script(type='text/javascript', src='/javascripts/libs/angular/angular.min.js')
+        script(type='text/javascript', src='/javascripts/app/app.js')
+        script(type='text/javascript', src='/javascripts/app/controller.js')
         //script(type='text/javascript', src='/javascripts/app/fetchdata.js')
         //-script(type='text/javascript', src='/javascripts/app/movienight.js')
     body

@@ -99,6 +99,12 @@ exports.event = function (req, res) {
   //} else {
     //res.redirect("/auth/facebook");
   //}
-  res.render('event', { title: 'Movie Night', RECOMMANDNUM: 8,
+  res.render('event-header', { title: 'Movie Night', RECOMMANDNUM: 8,
   genres: ['Action', 'Adventure', 'Drama', 'Comedy']});
 };
+
+
+exports.partialsEvent = function (req, res) {
+  res.render('event', { title: 'Movie Night', RECOMMANDNUM: 8,
+  genres: ['Action', 'Adventure', 'Drama', 'Comedy']});
+}
