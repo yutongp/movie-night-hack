@@ -12,5 +12,6 @@
 		"async":"*",
 		"everyauth":"*",
 		"mongoose":"*"
+		"cookie":"*"
 	}
 }
