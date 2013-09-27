@@ -11,7 +11,7 @@
 		"socket.io":"*",
 		"async":"*",
 		"everyauth":"*",
-		"mongoose":"*"
+		"mongoose":"*",
 		"cookie":"*"
 	}
 }
